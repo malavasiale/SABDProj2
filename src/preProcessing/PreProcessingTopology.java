@@ -11,7 +11,7 @@ public class PreProcessingTopology {
 
         builder.setSpout("source",new ReaderCSVSpout(),1);
 
-        builder.setBolt("modify",new ModifyCSVBolt(),2)
+        builder.setBolt("modify",new ModifyCSVBolt(),1)
                 .shuffleGrouping("source");
 
         Config conf = new Config();
