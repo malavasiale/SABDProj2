@@ -6,7 +6,7 @@ import org.apache.storm.topology.TopologyBuilder;
 
 public class PreProcessingTopology {
 
-    public static void main(){
+    public static void main(String[] args){
         TopologyBuilder builder = new TopologyBuilder();
 
         builder.setSpout("source",new ReaderCSVSpout(),1);

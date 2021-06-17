@@ -1,6 +1,9 @@
 package preProcessing;
 
+import com.opencsv.CSVParser;
+import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReader;
+import com.opencsv.CSVReaderBuilder;
 import org.apache.storm.spout.SpoutOutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.OutputFieldsDeclarer;
@@ -22,8 +25,12 @@ public class ReaderCSVSpout extends BaseRichSpout {
     public void open(Map map, TopologyContext topologyContext, SpoutOutputCollector spoutOutputCollector) {
         _collector = spoutOutputCollector;
         try {
+            CSVParser parser = new CSVParserBuilder().withSeparator(';').build();
             filereader = new FileReader("/data/prj2_dataset.csv");
-            csvReader = new CSVReader(filereader);
+            csvReader = new CSVReaderBuilder(filereader)
+                    .withCSVParser(parser)
+                    .withSkipLines(1)
+                    .build();
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -35,7 +42,7 @@ public class ReaderCSVSpout extends BaseRichSpout {
         String[] row;
         try {
             if((row = csvReader.readNext()) != null){
-                _collector.emit(new Values(row[0],row[1]));
+                _collector.emit(new Values(row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7],row[8],row[9],row[10]));
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -44,6 +51,7 @@ public class ReaderCSVSpout extends BaseRichSpout {
 
     @Override
     public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer) {
-        outputFieldsDeclarer.declare(new Fields("field1","field2"));
+        outputFieldsDeclarer.declare(new Fields("field1","field2","fiend3","filed4",
+                "filed5","field6","field7","filed8","field9","field10","field11"));
     }
 }

@@ -1,14 +1,47 @@
 package preProcessing;
 
+import com.opencsv.CSVWriter;
 import org.apache.storm.topology.BasicOutputCollector;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.topology.base.BaseBasicBolt;
 import org.apache.storm.tuple.Tuple;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import java.io.FileWriter;
+import java.io.IOException;
+
 public class ModifyCSVBolt extends BaseBasicBolt {
+
+    CSVWriter writer;
     @Override
     public void execute(Tuple tuple, BasicOutputCollector basicOutputCollector) {
-        System.out.println("HO RICEVUTO LA RIGA : \n "+ tuple.getString(0) + "\n" + tuple.getString(1));
+        try {
+            writer = new CSVWriter(new FileWriter("/data/dataset.csv",true));
+            String[] currentline = new String[11];
+            currentline[0] = tuple.getString(0);
+            currentline[1] = tuple.getString(1);
+            currentline[2] = tuple.getString(2);
+            currentline[3] = tuple.getString(3);
+            currentline[4] = tuple.getString(4);
+            currentline[5] = tuple.getString(5);
+            currentline[6] = tuple.getString(6);
+            String timestamp = tuple.getString(7);
+            SimpleDateFormat format1=new SimpleDateFormat("dd/MM/yyyy HH:mm");
+            SimpleDateFormat format2 = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+            Date date = format1.parse(timestamp);
+
+            currentline[7] = format2.format(date);
+            currentline[8] = tuple.getString(8);
+            currentline[9] = tuple.getString(9);
+            currentline[10] = tuple.getString(10);
+            writer.writeNext(currentline);
+            writer.flush();
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
