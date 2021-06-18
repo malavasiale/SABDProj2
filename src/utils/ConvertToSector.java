@@ -34,4 +34,17 @@ public class ConvertToSector {
             return true;
         }
     }
+
+    public static String shipType(String type_number){
+        Integer number = Integer.parseInt(type_number);
+        if(number.equals(35)){
+            return "militare";
+        }else if (number >= 60 && number <= 69){
+            return "passeggeri";
+        }else if (number >= 70 && number <= 79){
+            return "cargo";
+        }else{
+            return "other";
+        }
+    }
 }

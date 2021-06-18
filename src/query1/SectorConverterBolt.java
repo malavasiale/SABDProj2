@@ -33,7 +33,8 @@ public class SectorConverterBolt extends BaseWindowedBolt {
             String id = ConvertToSector.convertPointToSector(Double.parseDouble(slat),Double.parseDouble(slon));
             if(ConvertToSector.isOccidental(id)){
                 System.out.println("ID DEL SETTORE : "+id+"   Data :"+t.getString(8)+" TIMESTAMP :"+t.getLong(0));
-                collector.emit(new Values(t.getLong(0),t.getString(1),t.getLong(2),t.getString(8),id));
+                String ship_type = ConvertToSector.shipType(t.getString(2));
+                collector.emit(new Values(t.getLong(0),t.getString(1),ship_type,t.getString(8),id));
             }
         }
 

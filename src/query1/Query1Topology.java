@@ -4,6 +4,7 @@ import org.apache.storm.Config;
 import org.apache.storm.LocalCluster;
 import org.apache.storm.topology.TopologyBuilder;
 import org.apache.storm.topology.base.BaseWindowedBolt;
+import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.windowing.TimestampExtractor;
 
@@ -21,6 +22,9 @@ public class Query1Topology {
             }
         }).withTumblingWindow((BaseWindowedBolt.Duration.minutes(5))),3)
                 .shuffleGrouping("source");
+
+        builder.setBolt("count",new CountBolt(),3)
+                .fieldsGrouping("sector",new Fields("ship_type"));
 
         Config conf = new Config();
         conf.setDebug(true);
