@@ -25,7 +25,7 @@ public class ReaderCSVSpout extends BaseRichSpout {
     public void open(Map map, TopologyContext topologyContext, SpoutOutputCollector spoutOutputCollector) {
         _collector = spoutOutputCollector;
         try {
-            CSVParser parser = new CSVParserBuilder().withSeparator(';').build();
+            CSVParser parser = new CSVParserBuilder().withSeparator(',').build();
             filereader = new FileReader("/data/prj2_dataset.csv");
             csvReader = new CSVReaderBuilder(filereader)
                     .withCSVParser(parser)

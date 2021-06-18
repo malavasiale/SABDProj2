@@ -29,9 +29,17 @@ public class ModifyCSVBolt extends BaseBasicBolt {
             currentline[5] = tuple.getString(5);
             currentline[6] = tuple.getString(6);
             String timestamp = tuple.getString(7);
-            SimpleDateFormat format1=new SimpleDateFormat("dd/MM/yyyy HH:mm");
-            SimpleDateFormat format2 = new SimpleDateFormat("yyyy/MM/dd HH:mm");
-            Date date = format1.parse(timestamp);
+            System.out.println("HO LETTO LA DATA : " + timestamp);
+            SimpleDateFormat input_format1=new SimpleDateFormat("dd-MM-yy HH:mm");
+            SimpleDateFormat input_format2=new SimpleDateFormat("dd/MM/yy HH:mm");
+
+            SimpleDateFormat format2 = new SimpleDateFormat("yy-MM-dd HH:mm");
+            Date date;
+            if(timestamp.contains("-")){
+                date = input_format1.parse(timestamp);
+            }else{
+                date = input_format2.parse(timestamp);
+            }
 
             currentline[7] = format2.format(date);
             currentline[8] = tuple.getString(8);

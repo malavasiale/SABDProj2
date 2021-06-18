@@ -1,6 +1,10 @@
-preProcessing/PreProcessingTopology.class
-preProcessing/WriteCSVBolt.class
+utils/ConvertToSector.class
 utils/SorterCSV$1.class
-utils/SorterCSV.class
+query1/SectorConverterBolt.class
 preProcessing/ModifyCSVBolt.class
+query1/ReaderCSVSpout.class
+preProcessing/PreProcessingTopology.class
+query1/Query1Topology.class
+preProcessing/WriteCSVBolt.class
+utils/SorterCSV.class
 preProcessing/ReaderCSVSpout.class
