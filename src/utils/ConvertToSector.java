@@ -24,4 +24,14 @@ public class ConvertToSector {
         return id_lat+id_lon;
 
     }
+
+    public static boolean isOccidental(String id){
+        if(id.charAt(0) =='A' ||id.charAt(0) =='B' || id.charAt(0) =='C'){
+            return false;
+        }else if (Integer.parseInt(id.substring(1)) > 17){
+            return false;
+        }else{
+            return true;
+        }
+    }
 }

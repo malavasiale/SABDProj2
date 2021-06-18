@@ -7,4 +7,5 @@ preProcessing/PreProcessingTopology.class
 query1/Query1Topology.class
 preProcessing/WriteCSVBolt.class
 utils/SorterCSV.class
+query1/Query1Topology$1.class
 preProcessing/ReaderCSVSpout.class

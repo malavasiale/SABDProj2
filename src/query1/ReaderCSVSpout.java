@@ -14,12 +14,17 @@ import org.apache.storm.tuple.Values;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 
 public class ReaderCSVSpout extends BaseRichSpout {
     private FileReader filereader;
     private CSVReader csvReader;
     private SpoutOutputCollector _collector;
+    private SimpleDateFormat format = new SimpleDateFormat("yy-MM-dd HH:mm");
+
 
     @Override
     public void open(Map map, TopologyContext topologyContext, SpoutOutputCollector spoutOutputCollector) {
@@ -39,18 +44,22 @@ public class ReaderCSVSpout extends BaseRichSpout {
     @Override
     public void nextTuple() {
         String[] row;
+
+
         try {
             if((row = csvReader.readNext()) != null){
-                _collector.emit(new Values(row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7],row[8],row[9],row[10]));
+                Date d = format.parse(row[7]);
+                long timestamp = d.getTime();
+                _collector.emit(new Values(timestamp,row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7],row[8],row[9],row[10]));
             }
-        } catch (IOException e) {
+        } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
     }
 
     @Override
     public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer) {
-        outputFieldsDeclarer.declare(new Fields("field1","field2","fiend3","filed4",
-                "filed5","field6","field7","filed8","field9","field10","field11"));
+        outputFieldsDeclarer.declare(new Fields("field1","field2","field3","field4","field5",
+                "field6","field7","field8","field9","field10","field11","field12"));
     }
 }
