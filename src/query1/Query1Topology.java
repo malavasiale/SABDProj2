@@ -26,10 +26,13 @@ public class Query1Topology {
         builder.setBolt("count",new CountBolt(),1)
                 .fieldsGrouping("sector",new Fields("ship_type"));
 
+        builder.setBolt("sum",new SumBolt(),1)
+                .shuffleGrouping("count");
+
 
         Config conf = new Config();
-        conf.setDebug(true);
         conf.put(Config.TOPOLOGY_MESSAGE_TIMEOUT_SECS,400000);
+        conf.put(Config.TOPOLOGY_DEBUG,false);
         conf.setMaxTaskParallelism(3);
         LocalCluster cluster = new LocalCluster();
         cluster.submitTopology("query1", conf, builder.createTopology());

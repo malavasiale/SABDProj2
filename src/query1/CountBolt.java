@@ -4,6 +4,7 @@ import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.topology.base.BaseRichBolt;
+import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
 import org.javatuples.Pair;
@@ -11,6 +12,7 @@ import org.javatuples.Quartet;
 import org.javatuples.Quintet;
 import org.javatuples.Sextet;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -63,7 +65,7 @@ public class CountBolt extends BaseRichBolt {
         Pair<String,String> key = new Pair<String,String>(ship_type,sector_id);
         String[] date_splitted = date.substring(0,8).split("-");
 
-        System.out.println("La chiave è presente ?  "+ counts.containsKey(key));
+        /**System.out.println("La chiave è presente ?  "+ counts.containsKey(key));
 
         if(counts.containsKey(key)){
             System.out.println("++++++++++++++++++++++++++++++++++++++\n\n\n");
@@ -72,16 +74,16 @@ public class CountBolt extends BaseRichBolt {
             System.out.println("GIORNO ATTUALE "+counts.get(key).getValue2()+"   GIORNO TUPLA  "+date_splitted[2]);
             System.out.println(" VALORE CONDIZIONI  "+(!counts.get(key).getValue0().equals(date_splitted[0])
                     || !counts.get(key).getValue1().equals(date_splitted[1]) || !counts.get(key).getValue2().equals(date_splitted[2])));
-        }
+        }**/
         if(counts.containsKey(key) && (!counts.get(key).getValue0().equals(date_splitted[0])
                 || !counts.get(key).getValue1().equals(date_splitted[1]) || !counts.get(key).getValue2().equals(date_splitted[2]))){
             //EMIT
-            System.out.println("PRINT EMIT\n\n\n\n***************************************\n\n\n");
+            //System.out.println("PRINT EMIT\n\n\n\n***************************************\n\n\n");
             reset_map(date_splitted);
         }
 
         if(!presents.get(sector_id).contains(ship_id)){
-            System.out.println("PRINT ADD\n\n\n\n#########################################\n\n\n");
+            //System.out.println("PRINT ADD\n\n\n\n#########################################\n\n\n");
             presents.get(sector_id).add(ship_id);
             Integer previus_count = counts.get(key).getValue3();
             Quartet<String,String,String,Integer> new_quartet = counts.get(key).setAt3(previus_count+1);
@@ -95,25 +97,26 @@ public class CountBolt extends BaseRichBolt {
 
     @Override
     public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer) {
-
+        outputFieldsDeclarer.declare(new Fields("data","sector_id","ship_type","number"));
     }
 
     public void reset_map(String[] date_splitted){
-        System.out.println("****************\n\n\n\n");
+        System.out.println("**********************NUOVO EMIT\n\n**********************");
         for(Pair<String,String> key :counts.keySet()){
-            /**
-            System.out.print("DATA   "+counts.get(key).getValue0()+"/"+counts.get(key).getValue1()+"/"+counts.get(key).getValue2());
+
+            /**System.out.print("DATA   "+counts.get(key).getValue0()+"/"+counts.get(key).getValue1()+"/"+counts.get(key).getValue2());
             System.out.print("     SETTORE "+key.getValue1()+"   TIPO NAVE  "+key.getValue0());
-            System.out.print("    NUMERO NAVI    "+counts.get(key).getValue3()+"\n");
+            System.out.print("    NUMERO NAVI    "+counts.get(key).getValue3()+"\n");**/
             presents.put(key.getValue1(), new ArrayList<String>());
             counts.put(key,new Quartet<String,String,String,Integer>(date_splitted[0],
                     date_splitted[1],date_splitted[2],0));
-            **/
-            String data = counts.get(key).getValue0()+"/"+counts.get(key).getValue1()+"/"+counts.get(key).getValue2();
+
+            String data = counts.get(key).getValue0()+"-"+counts.get(key).getValue1()+"-"+counts.get(key).getValue2();
             String cell = key.getValue1();
             String type_n = key.getValue0();
             String num_n = counts.get(key).getValue3().toString();
-            collector.emit(new Values(data,cell,type_n,num_n));
+            System.out.println("DATA : " + data + "   SETTORE :  " + cell + "    TIPO : " + type_n + "     VALORE : " + num_n);
+            //collector.emit(new Values(data,cell,type_n,num_n));
         }
     }
 }

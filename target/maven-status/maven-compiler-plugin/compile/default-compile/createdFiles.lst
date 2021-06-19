@@ -2,11 +2,12 @@ query1/CountBolt.class
 utils/ConvertToSector.class
 utils/SorterCSV$1.class
 query1/SectorConverterBolt.class
-preProcessing/ModifyCSVBolt.class
 query1/ReaderCSVSpout.class
 preProcessing/PreProcessingTopology.class
 query1/Query1Topology.class
+query1/SumBolt.class
+preProcessing/ReaderCSVSpout.class
+preProcessing/ModifyCSVBolt.class
 preProcessing/WriteCSVBolt.class
 utils/SorterCSV.class
 query1/Query1Topology$1.class
-preProcessing/ReaderCSVSpout.class
