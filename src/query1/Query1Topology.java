@@ -26,6 +26,7 @@ public class Query1Topology {
         builder.setBolt("count",new CountBolt(),1)
                 .fieldsGrouping("sector",new Fields("ship_type"));
 
+
         Config conf = new Config();
         conf.setDebug(true);
         conf.put(Config.TOPOLOGY_MESSAGE_TIMEOUT_SECS,400000);
