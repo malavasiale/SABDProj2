@@ -80,6 +80,7 @@ public class CountBolt extends BaseRichBolt {
             //EMIT
             //System.out.println("PRINT EMIT\n\n\n\n***************************************\n\n\n");
             reset_map(date_splitted);
+
         }
 
         if(!presents.get(sector_id).contains(ship_id)){
@@ -87,6 +88,7 @@ public class CountBolt extends BaseRichBolt {
             presents.get(sector_id).add(ship_id);
             Integer previus_count = counts.get(key).getValue3();
             Quartet<String,String,String,Integer> new_quartet = counts.get(key).setAt3(previus_count+1);
+            //System.out.println("QUARTETTO "+new_quartet+"            \n");
             counts.put(key,new_quartet);
         }
 
@@ -102,21 +104,23 @@ public class CountBolt extends BaseRichBolt {
 
     public void reset_map(String[] date_splitted){
         System.out.println("**********************NUOVO EMIT\n\n**********************");
-        for(Pair<String,String> key :counts.keySet()){
+
+        for(Pair<String,String> current_key :counts.keySet()){
 
             /**System.out.print("DATA   "+counts.get(key).getValue0()+"/"+counts.get(key).getValue1()+"/"+counts.get(key).getValue2());
             System.out.print("     SETTORE "+key.getValue1()+"   TIPO NAVE  "+key.getValue0());
             System.out.print("    NUMERO NAVI    "+counts.get(key).getValue3()+"\n");**/
-            presents.put(key.getValue1(), new ArrayList<String>());
-            counts.put(key,new Quartet<String,String,String,Integer>(date_splitted[0],
-                    date_splitted[1],date_splitted[2],0));
 
-            String data = counts.get(key).getValue0()+"-"+counts.get(key).getValue1()+"-"+counts.get(key).getValue2();
-            String cell = key.getValue1();
-            String type_n = key.getValue0();
-            String num_n = counts.get(key).getValue3().toString();
+            String data = counts.get(current_key).getValue0()+"-"+counts.get(current_key).getValue1()+"-"+counts.get(current_key).getValue2();
+            String cell = current_key.getValue1();
+            String type_n = current_key.getValue0();
+            String num_n = counts.get(current_key).getValue3().toString();
             System.out.println("DATA : " + data + "   SETTORE :  " + cell + "    TIPO : " + type_n + "     VALORE : " + num_n);
-            //collector.emit(new Values(data,cell,type_n,num_n));
+
+            collector.emit(new Values(data,cell,type_n,num_n));
+            counts.put(current_key,new Quartet<String,String,String,Integer>(date_splitted[0],
+                    date_splitted[1],date_splitted[2],0));
+            presents.put(current_key.getValue1(), new ArrayList<String>());
         }
     }
 }

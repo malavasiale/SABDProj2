@@ -19,7 +19,7 @@ public class ModifyCSVBolt extends BaseBasicBolt {
     @Override
     public void execute(Tuple tuple, BasicOutputCollector basicOutputCollector) {
         try {
-            writer = new CSVWriter(new FileWriter("/data/dataset.csv",true));
+            writer = new CSVWriter(new FileWriter("/data/dataset.csv",true),CSVWriter.DEFAULT_SEPARATOR,CSVWriter.NO_QUOTE_CHARACTER);
             String[] currentline = new String[11];
             currentline[0] = tuple.getString(0);
             currentline[1] = tuple.getString(1);
@@ -45,6 +45,7 @@ public class ModifyCSVBolt extends BaseBasicBolt {
             currentline[8] = tuple.getString(8);
             currentline[9] = tuple.getString(9);
             currentline[10] = tuple.getString(10);
+
             writer.writeNext(currentline);
             writer.flush();
         } catch (IOException | ParseException e) {

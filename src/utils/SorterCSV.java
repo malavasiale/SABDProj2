@@ -32,7 +32,7 @@ public class SorterCSV {
             }
         });
 
-        CSVWriter writer = new CSVWriter(new FileWriter("../dataset_sorted.csv",true));
+        CSVWriter writer = new CSVWriter(new FileWriter("../dataset_sorted.csv",true),CSVWriter.DEFAULT_SEPARATOR,CSVWriter.NO_QUOTE_CHARACTER);
         writer.writeAll(to_sort);
     }
 
