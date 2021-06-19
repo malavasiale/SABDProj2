@@ -3,6 +3,7 @@
 /home/brielino/SABDProj2/src/query1/SectorConverterBolt.java
 /home/brielino/SABDProj2/src/utils/ConvertToSector.java
 /home/brielino/SABDProj2/src/preProcessing/WriteCSVBolt.java
+/home/brielino/SABDProj2/src/query1/CountBolt.java
 /home/brielino/SABDProj2/src/preProcessing/ReaderCSVSpout.java
 /home/brielino/SABDProj2/src/query1/ReaderCSVSpout.java
 /home/brielino/SABDProj2/src/query1/Query1Topology.java

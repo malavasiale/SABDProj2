@@ -1,3 +1,4 @@
+query1/CountBolt.class
 utils/ConvertToSector.class
 utils/SorterCSV$1.class
 query1/SectorConverterBolt.class

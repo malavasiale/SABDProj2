@@ -20,10 +20,10 @@ public class Query1Topology {
             public long extractTimestamp(Tuple tuple) {
                 return tuple.getLong(0);
             }
-        }).withTumblingWindow((BaseWindowedBolt.Duration.minutes(5))),3)
+        }).withTumblingWindow((BaseWindowedBolt.Duration.minutes(5))),1)
                 .shuffleGrouping("source");
 
-        builder.setBolt("count",new CountBolt(),3)
+        builder.setBolt("count",new CountBolt(),1)
                 .fieldsGrouping("sector",new Fields("ship_type"));
 
         Config conf = new Config();
