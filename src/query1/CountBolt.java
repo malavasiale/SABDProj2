@@ -53,7 +53,7 @@ public class CountBolt extends BaseRichBolt {
         }
 
 
-        this.collector = collector;
+        this.collector = outputCollector;
     }
 
     @Override
