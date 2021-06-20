@@ -65,7 +65,9 @@ public class SumBolt extends BaseRichBolt {
                 if(days_counts.get(key).size() == size_for_week){
                     System.out.println("ts,sector_id,militare,passeggeri,cargo,other");
                     ArrayList<Pair<String,Integer>> to_scroll = days_counts.get(key);
-                    String row = key.getValue1() + "," + key.getValue0();
+                    Date d = new Date(key.getValue1());
+                    this.format.format(d);
+                    String row = d + "," + key.getValue0();
                     for(String type : ship_types){
                         Integer sum = 0;
                         for(Pair<String,Integer> elem : to_scroll){

@@ -12,14 +12,17 @@ public class ConvertToSector {
 
     public static String convertPointToSector(Double lat, Double lon){
         if(lat > maxLat || lon > maxLon || lat < minLat || lon < minLon){
-            return "Punto fuori range!";
+            return "Coordinate non valide!";
         }
 
-        Integer number_lat = (int)Math.round((lat - minLat)/1.3);
-        Integer number_lon = (int)Math.round((lon - minLon)/1.075);
+        double number_lat = ((lat - minLat)/1.3);
+        int integer_lat = (int)number_lat;
+        double number_lon = ((lon - minLon)/1.075);
+        int integer_lon = (int)number_lon+1;
 
-        String id_lat = latID[number_lat];
-        String id_lon = number_lon.toString();
+
+        String id_lat = latID[integer_lat];
+        String id_lon = Integer.toString(integer_lon);
 
         return id_lat+id_lon;
 

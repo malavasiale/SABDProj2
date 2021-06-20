@@ -86,6 +86,7 @@ public class CountBolt extends BaseRichBolt {
 
         }
 
+
         if(!presents.get(sector_id).contains(ship_id)){
             //System.out.println("PRINT ADD\n\n\n\n#########################################\n\n\n");
             presents.get(sector_id).add(ship_id);
