@@ -26,8 +26,12 @@ public class SumBolt extends BaseRichBolt {
     Map<Triplet<String,Long,Long>, ArrayList<Pair<String,Integer>>> days_counts = new HashMap<Triplet<String,Long,Long>,ArrayList<Pair<String,Integer>>>();
 
     private SimpleDateFormat format = new SimpleDateFormat("yy-MM-dd");
+    static final String[] ship_types ={"militare","passeggeri","cargo","other"};
     Integer size_for_week = 28;
     long millis_week = 604800000;
+
+    /*TODO: inizializzare a seconda se settimanale o mensile*/
+    Integer days_for_mean = 7;
 
 
     @Override
@@ -53,11 +57,27 @@ public class SumBolt extends BaseRichBolt {
             /*Se il sector_id è già presente e il timestamp sta nel range, allora aggiungo il valore alla lista*/
             if(key.getValue0().equals(sector_id) && timestamp >= key.getValue1() && timestamp <= key.getValue2()){
                 found = true;
-                System.out.println("**********TROVATO NUOVO ELEMENTO DEL GIORNO  : " + key.toString() + "******************");
+                //System.out.println("**********TROVATO NUOVO ELEMENTO DELLA SETTIMANA  : " + key.toString() + "******************");
                 days_counts.get(key).add(new Pair<String,Integer>(ship_type,count));
+                //System.out.println("AGGIUNTO NUOVO ELEMENTO ALLA SETTIMANA "+key+"-- LISTA :"+ days_counts.get(key).toString());
+
+                /*Calcolo ed emit tupla finale*/
                 if(days_counts.get(key).size() == size_for_week){
-                    System.out.println("**********FINITO IL GIORNO : " + key.toString() + "******************");
-                    //TODO: FAI LA MEDIA ED EMETTI LA TUPLA
+                    System.out.println("ts,sector_id,militare,passeggeri,cargo,other");
+                    ArrayList<Pair<String,Integer>> to_scroll = days_counts.get(key);
+                    String row = key.getValue1() + "," + key.getValue0();
+                    for(String type : ship_types){
+                        Integer sum = 0;
+                        for(Pair<String,Integer> elem : to_scroll){
+                            if(elem.getValue0().equals(type)){
+                                sum = sum + elem.getValue1();
+                            }
+                        }
+                        Double mean = (sum/days_for_mean)*1.0;
+                        row = row + "," + mean;
+                    }
+                    /*PRINT RIGA FINALE*/
+                    System.out.println(row);
                     days_counts.remove(key);
                 }
                 break;
@@ -68,7 +88,7 @@ public class SumBolt extends BaseRichBolt {
             Triplet<String,Long,Long> new_key = new Triplet<String,Long,Long>(sector_id,timestamp,timestamp+millis_week);
             ArrayList<Pair<String,Integer>> new_list = new ArrayList<Pair<String,Integer>>();
             new_list.add(new Pair<String,Integer>(ship_type,count));
-            System.out.println("-------------AGGIUNTO NUOVO GIORNO CON KEY : "+new_key.toString()+"-------------------------");
+            //System.out.println("-------------AGGIUNTO NUOVA SETTIMANA CON KEY : "+new_key.toString()+"-------------------------");
             days_counts.put(new_key,new_list);
         }
 
