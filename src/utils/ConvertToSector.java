@@ -31,9 +31,7 @@ public class ConvertToSector {
     }
 
     public static boolean isOccidental(String id){
-        if(id.charAt(0) =='A' ||id.charAt(0) =='B' || id.charAt(0) =='C'){
-            return false;
-        }else if (Integer.parseInt(id.substring(1)) > 17){
+        if (Integer.parseInt(id.substring(1)) > 17){
             return false;
         }else{
             return true;
@@ -50,6 +48,18 @@ public class ConvertToSector {
             return "cargo";
         }else{
             return "other";
+        }
+    }
+
+    public static String convertOrarioToFascia(String data) {
+        String[] data_splitted = data.split(" ");
+        String orario = data_splitted[1];
+        String[] ora_string = orario.split(":");
+        Integer ora = Integer.parseInt(ora_string[0]);
+        if(ora<12){
+            return "prima";
+        }else{
+            return "seconda";
         }
     }
 }

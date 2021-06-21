@@ -19,7 +19,7 @@ import java.util.Map;
    implemented with rabbitMQ.
  */
 
-public class RabbitMQExporterBolt extends BaseRichBolt {
+public class RabbitMQExporterBolt1 extends BaseRichBolt {
 
     private static final long serialVersionUID = 1L;
     private OutputCollector collector;
@@ -31,8 +31,8 @@ public class RabbitMQExporterBolt extends BaseRichBolt {
     private String defaultQueue;
     FileWriter myWriter;
 
-    public RabbitMQExporterBolt(String rabbitMqHost, String rabbitMqUsername, String rabbitMqPassword,
-                                String defaultQueue) {
+    public RabbitMQExporterBolt1(String rabbitMqHost, String rabbitMqUsername, String rabbitMqPassword,
+                                 String defaultQueue) {
         super();
         this.rabbitMqHost = rabbitMqHost;
         this.rabbitMqUsername = rabbitMqUsername;

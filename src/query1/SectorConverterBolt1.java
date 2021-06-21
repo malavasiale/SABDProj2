@@ -12,7 +12,7 @@ import utils.ConvertToSector;
 
 import java.util.Map;
 
-public class SectorConverterBolt extends BaseWindowedBolt {
+public class SectorConverterBolt1 extends BaseWindowedBolt {
     OutputCollector collector;
 
 
@@ -31,11 +31,14 @@ public class SectorConverterBolt extends BaseWindowedBolt {
             String slon = t.getString(4);
 
             String id = ConvertToSector.convertPointToSector(Double.parseDouble(slat),Double.parseDouble(slon));
-            if(ConvertToSector.isOccidental(id)){
-                //System.out.println("*************************************************\nData :"+t.getString(8));
-                String ship_type = ConvertToSector.shipType(t.getString(2));
-                collector.emit(new Values(t.getLong(0),t.getString(1),ship_type,t.getString(8),id));
+            if(id.length()<5){
+                if(ConvertToSector.isOccidental(id)){
+                    //System.out.println("*************************************************\nData :"+t.getString(8));
+                    String ship_type = ConvertToSector.shipType(t.getString(2));
+                    collector.emit(new Values(t.getLong(0),t.getString(1),ship_type,t.getString(8),id));
+                }
             }
+
         }
 
     }

@@ -17,8 +17,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class CountBolt extends BaseRichBolt {
-    static final String[] latID = {"D","E","F","G","H","I","J"};
+public class CountBolt1 extends BaseRichBolt {
+    static final String[] latID = {"A","B","C","D","E","F","G","H","I","J"};
     static final String[] ship_types ={"militare","passeggeri","cargo","other"};
     OutputCollector collector;
 

@@ -19,7 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 
-public class ReaderCSVSpout extends BaseRichSpout {
+public class ReaderCSVSpout1 extends BaseRichSpout {
     private FileReader filereader;
     private CSVReader csvReader;
     private SpoutOutputCollector _collector;

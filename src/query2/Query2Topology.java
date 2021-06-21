@@ -1,4 +1,4 @@
-package query1;
+package query2;
 
 import org.apache.storm.Config;
 import org.apache.storm.LocalCluster;
@@ -7,15 +7,16 @@ import org.apache.storm.topology.base.BaseWindowedBolt;
 import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.windowing.TimestampExtractor;
+import query1.*;
 
-public class Query1Topology {
+public class Query2Topology {
 
     public static void main(String[] args){
         TopologyBuilder builder = new TopologyBuilder();
 
-        builder.setSpout("source",new ReaderCSVSpout1(),1);
+        builder.setSpout("source",new ReaderCSVSpout2(),1);
 
-        builder.setBolt("sector",new SectorConverterBolt1().withTimestampExtractor(new TimestampExtractor() {
+        builder.setBolt("sector",new SectorConverterBolt2().withTimestampExtractor(new TimestampExtractor() {
             @Override
             public long extractTimestamp(Tuple tuple) {
                 return tuple.getLong(0);
@@ -23,9 +24,9 @@ public class Query1Topology {
         }).withTumblingWindow((BaseWindowedBolt.Duration.minutes(30))),1)
                 .shuffleGrouping("source");
 
-        builder.setBolt("count",new CountBolt1(),1)
-                .fieldsGrouping("sector",new Fields("ship_type"));
-
+        builder.setBolt("count",new CountBolt2(),1)
+                .shuffleGrouping("sector");
+        /**
         builder.setBolt("sum",new SumBolt1("week"),1)
                 .shuffleGrouping("count");
 
@@ -35,12 +36,12 @@ public class Query1Topology {
                         "rabbitmq", "query1"),
                 3)
                 .shuffleGrouping("sum");
-
+        **/
         Config conf = new Config();
         conf.put(Config.TOPOLOGY_ENABLE_MESSAGE_TIMEOUTS,false);
         conf.put(Config.TOPOLOGY_DEBUG,false);
         conf.setMaxTaskParallelism(3);
         LocalCluster cluster = new LocalCluster();
-        cluster.submitTopology("query1", conf, builder.createTopology());
+        cluster.submitTopology("query2", conf, builder.createTopology());
     }
 }

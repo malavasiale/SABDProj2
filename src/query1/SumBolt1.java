@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-public class SumBolt extends BaseRichBolt {
+public class SumBolt1 extends BaseRichBolt {
 
     OutputCollector collector;
     /*
@@ -36,7 +36,7 @@ public class SumBolt extends BaseRichBolt {
     /*TODO: inizializzare a seconda se settimanale o mensile*/
     Integer days_for_mode;
 
-    public SumBolt(String mode){
+    public SumBolt1(String mode){
         if(mode.equals("week")){
             this.size_for_mode = 28;
             this.millis_mode = TimeUnit.DAYS.toMillis(7);
