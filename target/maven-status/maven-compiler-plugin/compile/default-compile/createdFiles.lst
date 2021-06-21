@@ -2,12 +2,16 @@ query1/CountBolt.class
 utils/ConvertToSector.class
 utils/SorterCSV$1.class
 query1/SectorConverterBolt.class
+utils/RabbitMQManager$1.class
 query1/ReaderCSVSpout.class
 preProcessing/PreProcessingTopology.class
 query1/Query1Topology.class
 query1/SumBolt.class
 preProcessing/ReaderCSVSpout.class
+query1/RabbitMQExporterBolt.class
 preProcessing/ModifyCSVBolt.class
+utils/RabbitMQConsumer.class
 preProcessing/WriteCSVBolt.class
+utils/RabbitMQManager.class
 utils/SorterCSV.class
 query1/Query1Topology$1.class

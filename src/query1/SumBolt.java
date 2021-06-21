@@ -4,7 +4,9 @@ import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.topology.base.BaseRichBolt;
+import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
+import org.apache.storm.tuple.Values;
 import org.javatuples.Pair;
 import org.javatuples.Triplet;
 
@@ -17,6 +19,8 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class SumBolt extends BaseRichBolt {
+
+    OutputCollector collector;
     /*
     * HashMap con :
     * key = settore , timestamp iniziale, timestamp limite
@@ -47,7 +51,7 @@ public class SumBolt extends BaseRichBolt {
 
     @Override
     public void prepare(Map map, TopologyContext topologyContext, OutputCollector outputCollector) {
-
+        this.collector = outputCollector;
     }
 
     @Override
@@ -88,10 +92,11 @@ public class SumBolt extends BaseRichBolt {
                             }
                         }
                         Double mean = (sum/ days_for_mode)*1.0;
-                        row = row + "," + mean;
+                        row = row +","+ type + "," + mean;
                     }
                     /*PRINT RIGA FINALE*/
                     System.out.println(row);
+                    collector.emit(new Values(row));
                     days_counts.remove(key);
                 }
 
@@ -111,6 +116,6 @@ public class SumBolt extends BaseRichBolt {
 
     @Override
     public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer) {
-
+        outputFieldsDeclarer.declare(new Fields("row"));
     }
 }

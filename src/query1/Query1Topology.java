@@ -29,6 +29,12 @@ public class Query1Topology {
         builder.setBolt("sum",new SumBolt("week"),1)
                 .shuffleGrouping("count");
 
+        builder.setBolt("exporter",
+                new RabbitMQExporterBolt(
+                        "rabbitmq","rabbitmq" ,
+                        "rabbitmq", "query1"),
+                1)
+                .shuffleGrouping("sum");
 
         Config conf = new Config();
         conf.put(Config.TOPOLOGY_ENABLE_MESSAGE_TIMEOUTS,false);
