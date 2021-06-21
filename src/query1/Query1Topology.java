@@ -20,18 +20,18 @@ public class Query1Topology {
             public long extractTimestamp(Tuple tuple) {
                 return tuple.getLong(0);
             }
-        }).withTumblingWindow((BaseWindowedBolt.Duration.minutes(5))),1)
+        }).withTumblingWindow((BaseWindowedBolt.Duration.minutes(30))),1)
                 .shuffleGrouping("source");
 
         builder.setBolt("count",new CountBolt(),1)
                 .fieldsGrouping("sector",new Fields("ship_type"));
 
-        builder.setBolt("sum",new SumBolt(),1)
+        builder.setBolt("sum",new SumBolt("week"),1)
                 .shuffleGrouping("count");
 
 
         Config conf = new Config();
-        conf.put(Config.TOPOLOGY_MESSAGE_TIMEOUT_SECS,400000);
+        conf.put(Config.TOPOLOGY_ENABLE_MESSAGE_TIMEOUTS,false);
         conf.put(Config.TOPOLOGY_DEBUG,false);
         conf.setMaxTaskParallelism(3);
         LocalCluster cluster = new LocalCluster();

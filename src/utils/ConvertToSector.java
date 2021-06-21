@@ -7,7 +7,7 @@ public class ConvertToSector {
     static final Double minLon = -6.0;
     static final Double maxLon = 37.0;
 
-    static final String[] latID = {"A","B","C","D","F","G","H","I","J"};
+    static final String[] latID = {"A","B","C","D","E","F","G","H","I","J"};
 
 
     public static String convertPointToSector(Double lat, Double lon){
@@ -21,7 +21,9 @@ public class ConvertToSector {
         int integer_lon = (int)number_lon+1;
 
 
+
         String id_lat = latID[integer_lat];
+
         String id_lon = Integer.toString(integer_lon);
 
         return id_lat+id_lon;

@@ -18,7 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class CountBolt extends BaseRichBolt {
-    static final String[] latID = {"D","F","G","H","I","J"};
+    static final String[] latID = {"D","E","F","G","H","I","J"};
     static final String[] ship_types ={"militare","passeggeri","cargo","other"};
     OutputCollector collector;
 
@@ -46,7 +46,7 @@ public class CountBolt extends BaseRichBolt {
                 presents.put(sector_id,new ArrayList<String>());
                 for (String current_type : ship_types){
                     counts.put(new Pair<String,String>(current_type,sector_id),new Quartet<String,String,String,Integer>("15",
-                            "03","10",0));
+                            "03","15",0));
                 }
             }
         }
@@ -125,10 +125,10 @@ public class CountBolt extends BaseRichBolt {
 
             /*Se manca qualche giorno, faccio un emit del giorno vuoto*/
             if(days_to_add > 1){
-                //System.out.println("TROVATO GIORNI MANCANTI : " + old_data + " ----- " + date_splitted[1]+"-"+date_splitted[2]);
+                System.out.println("TROVATO GIORNI MANCANTI : " + old_data + " ----- " + date_splitted[1]+"-"+date_splitted[2]);
                 for(int i = 1 ; i <= days_to_add-1;i++){
                     String date_to_add = emit_missing_days(old_data,i);
-                    //System.out.println("EMESSO IL SEGUENTE GIORNO VUOTO : " + date_to_add);
+                    System.out.println("EMESSO IL SEGUENTE GIORNO VUOTO : " + date_to_add);
                     collector.emit(new Values(date_to_add,cell,type_n,"0"));
                 }
             }

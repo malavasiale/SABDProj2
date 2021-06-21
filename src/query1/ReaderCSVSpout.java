@@ -24,11 +24,18 @@ public class ReaderCSVSpout extends BaseRichSpout {
     private CSVReader csvReader;
     private SpoutOutputCollector _collector;
     private SimpleDateFormat format = new SimpleDateFormat("yy-MM-dd HH:mm");
-
+    private Date date_start;
+    private long timestamp_start;
 
     @Override
     public void open(Map map, TopologyContext topologyContext, SpoutOutputCollector spoutOutputCollector) {
         _collector = spoutOutputCollector;
+        try {
+            date_start = format.parse("15-03-15 00:00");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        timestamp_start = date_start.getTime();
         try {
             CSVParser parser = new CSVParserBuilder()
                     .withSeparator(',')
@@ -50,10 +57,15 @@ public class ReaderCSVSpout extends BaseRichSpout {
 
 
         try {
+
             if((row = csvReader.readNext()) != null){
                 Date d = format.parse(row[7]);
                 long timestamp = d.getTime();
-                _collector.emit(new Values(timestamp,row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7],row[8],row[9],row[10]));
+                //System.out.println("DATA CORRENTE "+d.toString()+"  DATA LIMITE "+date_start.toString()+" è successiva? "+d.after(date_start));
+                if(d.after(date_start)){
+                    //System.out.println("  \nSTO INVIANDO"+d.toString()+"\n");
+                    _collector.emit(new Values(timestamp,row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7],row[8],row[9],row[10]));
+                }
             }
         } catch (IOException | ParseException e) {
             e.printStackTrace();
