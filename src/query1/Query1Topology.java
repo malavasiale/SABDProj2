@@ -24,11 +24,11 @@ public class Query1Topology {
         }).withTumblingWindow((BaseWindowedBolt.Duration.minutes(30))),1)
                 .shuffleGrouping("source");
 
-        builder.setBolt("count",new CountBolt1(),1)
+        builder.setBolt("count",new CountBolt1(),3)
                 .fieldsGrouping("sector",new Fields("ship_type"));
 
-        builder.setBolt("sum",new SumBolt1("week"),1)
-                .shuffleGrouping("count");
+        builder.setBolt("sum",new SumBolt1(args[0]),1)
+                .fieldsGrouping("count", new Fields("sector_id","ship_type"));
 
         builder.setBolt("exporter",
                 new RabbitMQExporterBolt1(

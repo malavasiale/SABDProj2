@@ -28,18 +28,19 @@ public class Query2Topology {
         builder.setBolt("count",new CountBolt2(),1)
                 .shuffleGrouping("sector");
 
-        builder.setBolt("sum",new SumBolt2("month"),1)
+        builder.setBolt("sum",new SumBolt2(args[0]),1)
                 .shuffleGrouping("count");
         builder.setBolt("rank", new RankBolt2(),1)
                 .shuffleGrouping("sum");
-        /**
+
         builder.setBolt("exporter",
-                new RabbitMQExporterBolt1(
+                new RabbitMQExporterBolt2(
                         "rabbitmq","rabbitmq" ,
-                        "rabbitmq", "query1"),
+                        "rabbitmq", "query2"),
                 3)
-                .shuffleGrouping("sum");
-        **/
+                .shuffleGrouping("rank");
+
+
         Config conf = new Config();
         conf.put(Config.TOPOLOGY_ENABLE_MESSAGE_TIMEOUTS,false);
         conf.put(Config.TOPOLOGY_DEBUG,false);

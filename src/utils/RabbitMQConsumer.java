@@ -9,7 +9,7 @@ public class RabbitMQConsumer {
         String rabbitMQ = "localhost";
         String rabbitMQUsername = "rabbitmq";
         String rabbitMQPassword = "rabbitmq";
-        String rabbitMQQueue = "query1";
+        String rabbitMQQueue = args[0];
 
         RabbitMQManager rmq = new RabbitMQManager(rabbitMQ, rabbitMQUsername, rabbitMQPassword, rabbitMQQueue);
 
