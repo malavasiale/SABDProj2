@@ -41,8 +41,8 @@ public class SumBolt2 extends BaseRichBolt {
             this.size_for_mode = 7;
             this.millis_mode = TimeUnit.DAYS.toMillis(7);
         }else{
-            this.size_for_mode = 30;
-            this.millis_mode = TimeUnit.DAYS.toMillis(30);
+            this.size_for_mode = 31;
+            this.millis_mode = TimeUnit.DAYS.toMillis(31);
         }
 
     }
@@ -85,9 +85,9 @@ public class SumBolt2 extends BaseRichBolt {
 
                 /*Calcolo ed emit tupla finale*/
                 if(days_counts.get(key).getValue1().equals(size_for_mode)){
-                    System.out.println("FINITA SETTIMANA "+timestamp+ "   FASCIA "+fascia+"   SECTOR_ID "+sector_id+"   MARE "+sea+"  NUM "+days_counts.get(key).getValue0()+" ULTIMA DATA"+date);// modificare
-
-                    collector.emit(new Values(timestamp,fascia,sector_id,sea,days_counts.get(key).getValue0()));
+                    //System.out.println("FINITA SETTIMANA "+timestamp+ "   FASCIA "+fascia+"   SECTOR_ID "+sector_id+"   MARE "+sea+"  NUM "+days_counts.get(key).getValue0()+" ULTIMA DATA"+date);// modificare
+                    //TODO cambiato il primo valore da timestamp a key.getValue1()
+                    collector.emit(new Values(key.getValue1(),fascia,sector_id,sea,days_counts.get(key).getValue0()));
                     days_counts.remove(key);
                 }
                 break;

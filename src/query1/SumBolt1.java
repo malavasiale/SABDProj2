@@ -42,8 +42,8 @@ public class SumBolt1 extends BaseRichBolt {
             this.days_for_mode = 7;
         }else{
             this.size_for_mode = 120;
-            this.millis_mode = TimeUnit.DAYS.toMillis(30);
-            this.days_for_mode = 30;
+            this.millis_mode = TimeUnit.DAYS.toMillis(31);
+            this.days_for_mode = 31;
         }
 
     }
