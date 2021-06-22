@@ -15,6 +15,7 @@ query2/SectorConverterBolt2.class
 query1/ReaderCSVSpout1.class
 preProcessing/ModifyCSVBolt.class
 utils/RabbitMQConsumer.class
+query2/SumBolt2.class
 query1/SectorConverterBolt1.class
 utils/RabbitMQManager.class
 preProcessing/WriteCSVBolt.class

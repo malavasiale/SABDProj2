@@ -13,6 +13,7 @@
 /home/brielino/SABDProj2/src/query1/ReaderCSVSpout1.java
 /home/brielino/SABDProj2/src/query1/CountBolt1.java
 /home/brielino/SABDProj2/src/preProcessing/WriteCSVBolt.java
+/home/brielino/SABDProj2/src/query2/SumBolt2.java
 /home/brielino/SABDProj2/src/utils/RabbitMQConsumer.java
 /home/brielino/SABDProj2/src/query1/Query1Topology.java
 /home/brielino/SABDProj2/src/query2/ReaderCSVSpout2.java

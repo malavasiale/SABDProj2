@@ -88,8 +88,8 @@ public class CountBolt2  extends BaseRichBolt {
          System.out.println(" VALORE CONDIZIONI  "+(!counts.get(key).getValue0().equals(date_splitted[0])
          || !counts.get(key).getValue1().equals(date_splitted[1]) || !counts.get(key).getValue2().equals(date_splitted[2])));
          }**/
-        if(counts.containsKey(key) && (!counts.get(key).getValue0().equals(date_splitted[0])
-                || !counts.get(key).getValue1().equals(date_splitted[1]) || !counts.get(key).getValue2().equals(date_splitted[2]))){
+        if(counts.containsKey(key) && (!counts.get(key).getValue1().equals(date_splitted[0])
+                || !counts.get(key).getValue2().equals(date_splitted[1]) || !counts.get(key).getValue3().equals(date_splitted[2]))){
             //EMIT
             //System.out.println("PRINT EMIT\n\n\n\n***************************************\n\n\n");
             try {
@@ -146,8 +146,9 @@ public class CountBolt2  extends BaseRichBolt {
                     collector.emit(new Values(date_to_add,cell,fascia,sea,"0"));
                 }
             }
-            System.out.println("DATA : " + old_data + "   SETTORE :  " + cell + "    FASCIA : " + fascia +" MARE "+sea+"     VALORE : " + num_n+"\n");
-            //collector.emit(new Values(old_data,cell,fascia,sea,num_n));
+
+            //System.out.println("DATA : " + old_data + "   SETTORE :  " + cell + "    FASCIA : " + fascia +" MARE "+sea+"     VALORE : " + num_n+"\n");
+            collector.emit(new Values(old_data,cell,fascia,sea,num_n));
             counts.put(current_key,new Quintet<String,String,String,String,Integer>(sea,date_splitted[0],
                     date_splitted[1],date_splitted[2],0));
             presents.put(current_key, new ArrayList<String>());

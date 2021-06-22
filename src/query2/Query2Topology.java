@@ -26,10 +26,12 @@ public class Query2Topology {
 
         builder.setBolt("count",new CountBolt2(),1)
                 .shuffleGrouping("sector");
-        /**
-        builder.setBolt("sum",new SumBolt1("week"),1)
-                .shuffleGrouping("count");
 
+        builder.setBolt("sum",new SumBolt2("week"),1)
+                .shuffleGrouping("count");
+        builder.setBolt("rank", new RankBolt2(),1)
+                .shuffleGrouping("sum");
+        /**
         builder.setBolt("exporter",
                 new RabbitMQExporterBolt1(
                         "rabbitmq","rabbitmq" ,

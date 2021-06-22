@@ -33,7 +33,6 @@ public class SumBolt1 extends BaseRichBolt {
     Integer size_for_mode;
     long millis_mode;
 
-    /*TODO: inizializzare a seconda se settimanale o mensile*/
     Integer days_for_mode;
 
     public SumBolt1(String mode){
