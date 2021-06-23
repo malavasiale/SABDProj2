@@ -4,6 +4,7 @@ import org.apache.storm.Config;
 import org.apache.storm.LocalCluster;
 import org.apache.storm.topology.TopologyBuilder;
 import org.apache.storm.topology.base.BaseWindowedBolt;
+import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.windowing.TimestampExtractor;
 import query2.*;
@@ -24,14 +25,15 @@ public class Query3Topology {
             public long extractTimestamp(Tuple tuple) {
                 return tuple.getLong(0);
             }
-        }).withTumblingWindow((BaseWindowedBolt.Duration.minutes(60))),1)
+        }).withTumblingWindow((BaseWindowedBolt.Duration.minutes(30))),1)
                 .shuffleGrouping("source");
 
-        builder.setBolt("partial",new PartialRanckBolt3(),1)
-                .shuffleGrouping("distance");
+        builder.setBolt("partial",new PartialRanckBolt3(),2)
+                .fieldsGrouping("distance",new Fields("trip_id"));
+
+        builder.setBolt("global",new GlobalRank3(),1)
+                .shuffleGrouping("partial");
         /**
-        builder.setBolt("sum",new SumBolt2("month"),1)
-                .shuffleGrouping("count");
         builder.setBolt("rank", new RankBolt2(),1)
                 .shuffleGrouping("sum");
         /**

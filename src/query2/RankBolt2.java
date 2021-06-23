@@ -63,7 +63,7 @@ public class RankBolt2 extends BaseRichBolt {
                 });
                 Date d = new Date(current_key.getValue0());
                 this.format.format(d);
-                //TODO EMIT
+
                 //System.out.println("Data Iniziale "+d+" Occidentale :\n"+"Fascia: "+fascia+"\n"+"Settori: "+collect.get(current_key).get(0).getValue0()+" "+collect.get(current_key).get(1).getValue0()+ " "+collect.get(current_key).get(2).getValue0()+" Con valori" +
                   //      " "+collect.get(current_key).get(0).getValue1()+" "+collect.get(current_key).get(1).getValue1()+" "+collect.get(current_key).get(2).getValue1()+"\n");
                 String row = d+","+sea+","+fascia+","+collect.get(current_key).get(0).getValue0()+"--"+collect.get(current_key).get(1).getValue0()+ "--"+collect.get(current_key).get(2).getValue0()+","+collect.get(current_key).get(0).getValue1()+"--"+collect.get(current_key).get(1).getValue1()+"--"+collect.get(current_key).get(2).getValue1();
@@ -76,7 +76,7 @@ public class RankBolt2 extends BaseRichBolt {
                     public int compare(Pair<String, Integer> t0, Pair<String, Integer> t1) {
                         if (t0.getValue1() > t1.getValue1()) {
                             return -1;
-                        } else if (t0.getValue1().equals(t1.getValue1())) {
+                        } else if (t0.getValue1()==t1.getValue1()) {
                             return 0; // You can change this to make it then look at the
                             //words alphabetical order
                         } else {
@@ -87,7 +87,7 @@ public class RankBolt2 extends BaseRichBolt {
                 });
                 Date d = new Date(current_key.getValue0());
                 this.format.format(d);
-                //TODO EMIT
+
                 //System.out.println("Data Iniziale "+d+" Orientale :\n"+"Fascia: "+fascia+"\n"+"Settori: "+collect.get(current_key).get(0).getValue0()+" "+collect.get(current_key).get(1).getValue0()+ " "+collect.get(current_key).get(2).getValue0()+" Con valori" +
                 //" "+collect.get(current_key).get(0).getValue1()+" "+collect.get(current_key).get(1).getValue1()+" "+collect.get(current_key).get(2).getValue1()+"\n");
                 String row = d+","+sea+","+fascia+","+collect.get(current_key).get(0).getValue0()+"--"+collect.get(current_key).get(1).getValue0()+ "--"+collect.get(current_key).get(2).getValue0()+","+collect.get(current_key).get(0).getValue1()+"--"+collect.get(current_key).get(1).getValue1()+"--"+collect.get(current_key).get(2).getValue1();

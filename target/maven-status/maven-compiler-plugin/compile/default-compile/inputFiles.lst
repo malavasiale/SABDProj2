@@ -3,10 +3,12 @@
 /home/brielino/SABDProj2/src/utils/ConvertToSector.java
 /home/brielino/SABDProj2/src/query2/Query2Topology.java
 /home/brielino/SABDProj2/src/utils/CalculateDistance.java
+/home/brielino/SABDProj2/src/utils/PartialWindowRank.java
 /home/brielino/SABDProj2/src/query2/SectorConverterBolt2.java
 /home/brielino/SABDProj2/src/preProcessing/WriteCSVBolt.java
 /home/brielino/SABDProj2/src/utils/SorterCSV.java
 /home/brielino/SABDProj2/src/query3/DistanceBolt3.java
+/home/brielino/SABDProj2/src/query3/GlobalRank3.java
 /home/brielino/SABDProj2/src/query1/SumBolt1.java
 /home/brielino/SABDProj2/src/preProcessing/ReaderCSVSpout.java
 /home/brielino/SABDProj2/src/utils/RabbitMQManager.java

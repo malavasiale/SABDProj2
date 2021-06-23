@@ -77,7 +77,7 @@ public class DistanceBolt3 extends BaseWindowedBolt {
                     Long windowTimestamp = active_trip.get(trip_id_current).getValue2();
                     Double current_dist = active_trip.get(trip_id_current).getValue3();
                     Long current_trip_id_end = active_trip.get(trip_id_current).getValue4();
-
+                    //System.out.println("TIMESTAMP "+timestamp_start+" TRIP_ID "+trip_id_current+" DISTANZA "+current_dist+"\n");
                     outputCollector.emit(new Values(windowTimestamp,trip_id_current,current_dist));
                     if(current_trip_id_end<=timestamp_start){
                         active_trip.remove(trip_id_current);
@@ -98,12 +98,15 @@ public class DistanceBolt3 extends BaseWindowedBolt {
                 Double distance_to_add =CalculateDistance.euclideanDistance(old_quintet.getValue0(),old_quintet.getValue1(),lat,lon);
                 Double old_distance = old_quintet.getValue3();
                 Quintet<Double,Double,Long,Double,Long> new_quintet = new Quintet<Double,Double,Long,Double,Long>(lat,lon,timestamp_start,old_distance+distance_to_add,timestamp_trip_id_end);
+                //active_trip.replace(trip_id,new_quintet);
                 active_trip.put(trip_id,new_quintet);
-                //System.out.println("AGGIRNATO VIAGGIO"+trip_id+" vECCHIA DISTANZA "+old_distance+"distanza aggiunta "+distance_to_add+"\n");
+                //System.out.println("AGGIRNATO VIAGGIO"+trip_id+" vECCHIA DISTANZA "+old_distance+"distanza aggiunta "+distance_to_add+" Lista chiavi "+active_trip.keySet().toString()+"\n");
+
             }else{
                 Quintet<Double,Double,Long,Double,Long> current_quintet = new Quintet<Double,Double,Long,Double,Long>(lat,lon,timestamp_start,0.0,timestamp_trip_id_end);
                 active_trip.put(trip_id,current_quintet);
-                //System.out.println("AGGIUNTO VIAGGIO "+trip_id+" QUINTET "+current_quintet.toString()+"\n");
+                //active_trip.replace(trip_id,current_quintet);
+                //System.out.println("AGGIUNTO VIAGGIO "+trip_id+" QUINTET "+current_quintet.toString()+" lista chiavi "+active_trip.keySet().toString()  +"\n");
             }
 
 
