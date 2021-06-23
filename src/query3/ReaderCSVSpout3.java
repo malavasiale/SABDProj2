@@ -31,7 +31,7 @@ public class ReaderCSVSpout3 extends BaseRichSpout {
     public void open(Map map, TopologyContext topologyContext, SpoutOutputCollector spoutOutputCollector) {
         _collector = spoutOutputCollector;
         try {
-            date_start = format.parse("15-03-15 00:00");
+            date_start = format.parse("15-03-10 12:00");
         } catch (ParseException e) {
             e.printStackTrace();
         }

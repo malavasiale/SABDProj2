@@ -20,6 +20,7 @@ import java.util.*;
 public class CountBolt1 extends BaseRichBolt {
     static final String[] latID = {"A","B","C","D","E","F","G","H","I","J"};
     static final String[] ship_types ={"militare","passeggeri","cargo","other"};
+    boolean first;
     OutputCollector collector;
 
     /*
@@ -40,16 +41,7 @@ public class CountBolt1 extends BaseRichBolt {
         /*
         Popoliamo l'HashMap dei settori
          */
-        for(String lat : latID){
-            for(Integer lon =1;lon <=17;lon++){
-                String sector_id = lat + lon;
-                presents.put(sector_id,new ArrayList<String>());
-                for (String current_type : ship_types){
-                    counts.put(new Pair<String,String>(current_type,sector_id),new Quartet<String,String,String,Integer>("15",
-                            "03","15",0));
-                }
-            }
-        }
+        first = true;
 
 
         this.collector = outputCollector;
@@ -57,13 +49,17 @@ public class CountBolt1 extends BaseRichBolt {
 
     @Override
     public void execute(Tuple tuple) {
+
         String sector_id = tuple.getString(4);
         String ship_type = tuple.getString(2);
         String ship_id =  tuple.getString(1);
         String date = tuple.getString(3);
         Pair<String,String> key = new Pair<String,String>(ship_type,sector_id);
         String[] date_splitted = date.substring(0,8).split("-");
-
+        if(first){
+            isFirst(date_splitted[0],date_splitted[1],date_splitted[2]);
+            first = false;
+        }
         /**System.out.println("La chiave è presente ?  "+ counts.containsKey(key));
 
         if(counts.containsKey(key)){
@@ -119,11 +115,13 @@ public class CountBolt1 extends BaseRichBolt {
             String cell = current_key.getValue1();
             String type_n = current_key.getValue0();
             String num_n = counts.get(current_key).getValue3().toString();
+            /**
             long days_to_add = date_difference(old_data,date_splitted[0]+"-"+date_splitted[1]+"-"+date_splitted[2]);
             //System.out.println("DATA : " + data + "   SETTORE :  " + cell + "    TIPO : " + type_n + "     VALORE : " + num_n);
-            ;
 
-            /*Se manca qualche giorno, faccio un emit del giorno vuoto*/
+
+
+
             if(days_to_add > 1){
                 System.out.println("TROVATO GIORNI MANCANTI : " + old_data + " ----- " + date_splitted[1]+"-"+date_splitted[2]);
                 for(int i = 1 ; i <= days_to_add-1;i++){
@@ -131,7 +129,7 @@ public class CountBolt1 extends BaseRichBolt {
                     System.out.println("EMESSO IL SEGUENTE GIORNO VUOTO : " + date_to_add);
                     collector.emit(new Values(date_to_add,cell,type_n,"0"));
                 }
-            }
+            }**/
 
             collector.emit(new Values(old_data,cell,type_n,num_n));
             counts.put(current_key,new Quartet<String,String,String,Integer>(date_splitted[0],
@@ -165,5 +163,20 @@ public class CountBolt1 extends BaseRichBolt {
         c.setTime(sdf.parse(start_data));
         c.add(Calendar.DATE, days_to_add);
         return sdf.format(c.getTime());
+    }
+
+    public void isFirst(String year,String month, String day){
+
+        for(String lat : latID){
+            for(Integer lon =1;lon <=17;lon++){
+                String sector_id_init = lat + lon;
+                presents.put(sector_id_init,new ArrayList<String>());
+                for (String current_type : ship_types){
+                    counts.put(new Pair<String,String>(current_type,sector_id_init),new Quartet<String,String,String,Integer>(year,
+                            month,day,0));
+                }
+            }
+        }
+
     }
 }

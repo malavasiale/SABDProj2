@@ -26,10 +26,10 @@ public class Query3Topology {
             }
         }).withTumblingWindow((BaseWindowedBolt.Duration.minutes(60))),1)
                 .shuffleGrouping("source");
-        /**
-        builder.setBolt("count",new CountBolt2(),1)
-                .shuffleGrouping("sector");
 
+        builder.setBolt("partial",new PartialRanckBolt3(),1)
+                .shuffleGrouping("distance");
+        /**
         builder.setBolt("sum",new SumBolt2("month"),1)
                 .shuffleGrouping("count");
         builder.setBolt("rank", new RankBolt2(),1)

@@ -11,7 +11,8 @@ import org.apache.storm.windowing.TimestampExtractor;
 public class Query1Topology {
 
     public static void main(String[] args){
-        //TODO aumentare parallelismo su : Count & Sum
+        //TODO AGGIUNGERE IN COUNTBOLT FIELD "SECTOR_ID" AGGIUNGERE LA PARTE CHE INSERISCE I GIORNI MANCANTI E MODIFICIARE
+        // IL NUMERO DI TUPLE ATTESE IN SUM = VALORE CORRENTE*NUMERO REPLICHE COUNTBOLT
         TopologyBuilder builder = new TopologyBuilder();
 
         builder.setSpout("source",new ReaderCSVSpout1(),1);
@@ -25,10 +26,10 @@ public class Query1Topology {
                 .shuffleGrouping("source");
 
         builder.setBolt("count",new CountBolt1(),3)
-                .fieldsGrouping("sector",new Fields("ship_type"));
+                .fieldsGrouping("sector",new Fields("day"));
 
-        builder.setBolt("sum",new SumBolt1(args[0]),1)
-                .fieldsGrouping("count", new Fields("sector_id","ship_type"));
+        builder.setBolt("sum",new SumBolt1(args[0]),3)
+                .fieldsGrouping("count", new Fields("sector_id"));
 
         builder.setBolt("exporter",
                 new RabbitMQExporterBolt1(

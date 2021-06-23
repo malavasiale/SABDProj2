@@ -10,11 +10,14 @@ import org.apache.storm.tuple.Values;
 import org.apache.storm.windowing.TupleWindow;
 import utils.ConvertToSector;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 
 public class SectorConverterBolt1 extends BaseWindowedBolt {
     OutputCollector collector;
-
+    private DateFormat dateformat;
 
 
     @Override
@@ -22,6 +25,8 @@ public class SectorConverterBolt1 extends BaseWindowedBolt {
                         TopologyContext context,
                         OutputCollector collector) {
         this.collector = collector;
+        this.dateformat = new SimpleDateFormat("yy-MM-dd");
+
     }
 
     @Override
@@ -35,7 +40,10 @@ public class SectorConverterBolt1 extends BaseWindowedBolt {
                 if(ConvertToSector.isOccidental(id)){
                     //System.out.println("*************************************************\nData :"+t.getString(8));
                     String ship_type = ConvertToSector.shipType(t.getString(2));
-                    collector.emit(new Values(t.getLong(0),t.getString(1),ship_type,t.getString(8),id));
+                    Date date = new Date(t.getLong(0));
+                    String string_date = dateformat.format(date);
+
+                    collector.emit(new Values(t.getLong(0),t.getString(1),ship_type,t.getString(8),id,string_date));
                 }
             }
 
@@ -44,6 +52,6 @@ public class SectorConverterBolt1 extends BaseWindowedBolt {
     }
     @Override
     public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer) {
-        outputFieldsDeclarer.declare(new Fields("timestamp","ship_id","ship_type","data","id_sector"));
+        outputFieldsDeclarer.declare(new Fields("timestamp","ship_id","ship_type","data","id_sector","day"));
     }
 }
