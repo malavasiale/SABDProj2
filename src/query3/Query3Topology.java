@@ -20,7 +20,7 @@ public class Query3Topology {
         builder.setSpout("source",new ReaderCSVSpout3(),1);
 
 
-        builder.setBolt("distance",new DistanceBolt3().withTimestampExtractor(new TimestampExtractor() {
+        builder.setBolt("distance",new DistanceBolt3(args[0]).withTimestampExtractor(new TimestampExtractor() {
             @Override
             public long extractTimestamp(Tuple tuple) {
                 return tuple.getLong(0);
@@ -28,22 +28,20 @@ public class Query3Topology {
         }).withTumblingWindow((BaseWindowedBolt.Duration.minutes(30))),1)
                 .shuffleGrouping("source");
 
-        builder.setBolt("partial",new PartialRanckBolt3(),2)
+        builder.setBolt("partial",new PartialRanckBolt3(args[0]),2)
                 .fieldsGrouping("distance",new Fields("trip_id"));
 
         builder.setBolt("global",new GlobalRank3(),1)
                 .shuffleGrouping("partial");
-        /**
-        builder.setBolt("rank", new RankBolt2(),1)
-                .shuffleGrouping("sum");
-        /**
+
+
         builder.setBolt("exporter",
-                new RabbitMQExporterBolt1(
+                new RabbitMQExporterBolt3(
                         "rabbitmq","rabbitmq" ,
-                        "rabbitmq", "query1"),
+                        "rabbitmq", "query3"),
                 3)
-                .shuffleGrouping("sum");
-        **/
+                .shuffleGrouping("global");
+
         Config conf = new Config();
         conf.put(Config.TOPOLOGY_ENABLE_MESSAGE_TIMEOUTS,false);
         conf.put(Config.TOPOLOGY_DEBUG,false);

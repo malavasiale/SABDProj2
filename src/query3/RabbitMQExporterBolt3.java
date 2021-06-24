@@ -1,4 +1,4 @@
-package query2;
+package query3;
 
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
@@ -7,11 +7,9 @@ import org.apache.storm.topology.base.BaseRichBolt;
 import org.apache.storm.tuple.Tuple;
 import utils.RabbitMQManager;
 
-import java.io.FileWriter;
 import java.util.Map;
 
-public class RabbitMQExporterBolt2 extends BaseRichBolt {
-
+public class RabbitMQExporterBolt3  extends BaseRichBolt {
     private static final long serialVersionUID = 1L;
     private OutputCollector collector;
 
@@ -22,7 +20,7 @@ public class RabbitMQExporterBolt2 extends BaseRichBolt {
     private String defaultQueue;
 
 
-    public RabbitMQExporterBolt2(String rabbitMqHost, String rabbitMqUsername, String rabbitMqPassword,
+    public RabbitMQExporterBolt3(String rabbitMqHost, String rabbitMqUsername, String rabbitMqPassword,
                                  String defaultQueue) {
         super();
         this.rabbitMqHost = rabbitMqHost;
@@ -43,7 +41,7 @@ public class RabbitMQExporterBolt2 extends BaseRichBolt {
     public void execute(Tuple tuple) {
 
         String output = tuple.getString(0);
-        rabbitmq.send("query2",output);
+        rabbitmq.send("query3",output);
 
     }
 
@@ -51,7 +49,6 @@ public class RabbitMQExporterBolt2 extends BaseRichBolt {
     public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer) {
 
     }
-
 
 
 }

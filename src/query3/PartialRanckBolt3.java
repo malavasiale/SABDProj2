@@ -20,8 +20,14 @@ public class PartialRanckBolt3 extends BaseRichBolt {
     private SimpleDateFormat format = new SimpleDateFormat("yy-MM-dd HH:mm");
     Long timestamp_start;
     List<Pair<String,Double>> array_window;
-
     OutputCollector outputCollector;
+
+    private Integer intervallo_num;
+
+    public PartialRanckBolt3(String intervallo){
+        this.intervallo_num = Integer.parseInt(intervallo);
+    }
+
     @Override
     public void prepare(Map map, TopologyContext topologyContext, OutputCollector outputCollector) {
         this.outputCollector = outputCollector;
@@ -51,22 +57,21 @@ public class PartialRanckBolt3 extends BaseRichBolt {
                     }
                 });
             }
-            System.out.println("TIMESTAMP ARRAYLIST DA INVIARE "+ timestamp_start+"   "+array_window.toString()+"\n");
-            //outputCollector.emit(new Values(array_window,timestamp_start));
-            timestamp_start = timestamp_start +TimeUnit.HOURS.toMillis(1);
+            //System.out.println("TIMESTAMP ARRAYLIST DA INVIARE "+ timestamp_start+"   "+array_window.toString()+"\n");
+            outputCollector.emit(new Values(array_window,timestamp_start));
+            timestamp_start = timestamp_start +TimeUnit.HOURS.toMillis(intervallo_num);
             array_window = new ArrayList<Pair<String,Double>>();
             while (windowStart > timestamp_start){
-                System.out.println("TIMESTAMP ARRAYLIST DA INVIARE "+ timestamp_start+"   "+array_window.toString()+"\n");
-                //outputCollector.emit(new Values(array_window,timestamp_start));
-                timestamp_start = timestamp_start +TimeUnit.HOURS.toMillis(1);
+                //System.out.println("TIMESTAMP ARRAYLIST DA INVIARE "+ timestamp_start+"   "+array_window.toString()+"\n");
+                outputCollector.emit(new Values(array_window,timestamp_start));
+                timestamp_start = timestamp_start +TimeUnit.HOURS.toMillis(intervallo_num);
             }
         }
 
         Pair<String,Double> current_pair = new Pair<String,Double>(trip_id,distance);
-        if(!array_window.contains(current_pair)){
-            //System.out.println(current_pair.toString()+" Lista "+array_window.toString()+"\n");
-            array_window.add(current_pair);
-        }
+        //System.out.println(current_pair.toString()+" Lista "+array_window.toString()+"\n");
+        array_window.add(current_pair);
+
 
 
 

@@ -29,6 +29,7 @@ public class DistanceBolt3 extends BaseWindowedBolt {
     private long timestamp_start;
     private long timestamp_final;
     OutputCollector outputCollector;
+    private Integer intervallo_num;
     /*
     HashMap:
         -key : Trip_id
@@ -37,10 +38,14 @@ public class DistanceBolt3 extends BaseWindowedBolt {
      */
     Map<String, Quintet<Double,Double,Long,Double,Long>> active_trip = new HashMap<String,Quintet<Double,Double,Long,Double,Long>>();
 
+    public DistanceBolt3(String intervallo){
+        this.intervallo_num = Integer.parseInt(intervallo);
+    }
+
     public DistanceBolt3() throws ParseException {
         date_start = format.parse("15-03-10 12:00");
         timestamp_start = date_start.getTime();
-        timestamp_final = timestamp_start + TimeUnit.HOURS.toMillis(1);
+        timestamp_final = timestamp_start + TimeUnit.HOURS.toMillis(intervallo_num);
     }
 
     @Override
@@ -70,7 +75,7 @@ public class DistanceBolt3 extends BaseWindowedBolt {
             if(timestamp >= timestamp_final){
                 while (timestamp >= timestamp_final){
                     timestamp_start = timestamp_final;
-                    timestamp_final = timestamp_final + TimeUnit.HOURS.toMillis(1);
+                    timestamp_final = timestamp_final + TimeUnit.HOURS.toMillis(intervallo_num);
                 }
 
                 for(String trip_id_current : new ArrayList<String>(active_trip.keySet()) ){
