@@ -9,7 +9,12 @@ public class ConvertToSector {
 
     static final String[] latID = {"A","B","C","D","E","F","G","H","I","J"};
 
-
+    /**
+     * Metodo per individuare in che settore si trova una nave
+     * @param lat
+     * @param lon
+     * @return String
+     */
     public static String convertPointToSector(Double lat, Double lon){
         if(lat > maxLat || lon > maxLon || lat < minLat || lon < minLon){
             return "Coordinate non valide!";
@@ -30,6 +35,11 @@ public class ConvertToSector {
 
     }
 
+    /**
+     * Metodo per verificare se un settore è presente nel Mar Mediterraneo Occidentale
+     * @param id
+     * @return Boolean
+     */
     public static boolean isOccidental(String id){
         if (Integer.parseInt(id.substring(1)) > 17){
             return false;
@@ -38,6 +48,11 @@ public class ConvertToSector {
         }
     }
 
+    /**
+     * Metodo per identificare il tipo di nave dato il suo id
+     * @param type_number
+     * @return String
+     */
     public static String shipType(String type_number){
         Integer number = Integer.parseInt(type_number);
         if(number.equals(35)){
@@ -51,6 +66,12 @@ public class ConvertToSector {
         }
     }
 
+    /**
+     * Metodo per verificare se un orario appartiene alla prima fascia 00:00 - 11:59 oppure alla seconda
+     * 12:00 - 23:59
+     * @param data
+     * @return
+     */
     public static String convertOrarioToFascia(String data) {
         String[] data_splitted = data.split(" ");
         String orario = data_splitted[1];

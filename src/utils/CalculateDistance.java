@@ -3,6 +3,15 @@ package utils;
 
 public class CalculateDistance {
 
+    /**
+     * Metodo per calcolare la distanza di 2 punti dati rispettivamente la latitudie e la logitudine
+     * @param prev_lat
+     * @param prev_lon
+     * @param last_lat
+     * @param last_lon
+     * @return Double
+     */
+
     public static Double euclideanDistance(Double prev_lat, Double prev_lon, Double last_lat, Double last_lon){
         double earthRadius = 6371000; //meters
         double dLat = Math.toRadians(prev_lat-last_lat);

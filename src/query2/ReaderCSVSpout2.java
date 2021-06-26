@@ -19,6 +19,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 
+/**
+ * Metodo per la lettura del file CSV con nella query1 & query2
+ */
 public class ReaderCSVSpout2 extends BaseRichSpout {
     private FileReader filereader;
     private CSVReader csvReader;

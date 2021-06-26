@@ -32,17 +32,20 @@ public class SectorConverterBolt1 extends BaseWindowedBolt {
     @Override
     public void execute(TupleWindow tupleWindow) {
         for(Tuple t : tupleWindow.get()){
+            //Vengono prese la latitudine e la longitudine della tupla
             String slat = t.getString(5);
             String slon = t.getString(4);
-
+            //Conversione (lat,lon) --> Secot_id
             String id = ConvertToSector.convertPointToSector(Double.parseDouble(slat),Double.parseDouble(slon));
+            //Controllo per evitare di passere dati non validi
             if(id.length()<5){
+                //Verifica se un settore appartiene o no al Mar Mediterraneo Occidentale
                 if(ConvertToSector.isOccidental(id)){
-                    //System.out.println("*************************************************\nData :"+t.getString(8));
+
                     String ship_type = ConvertToSector.shipType(t.getString(2));
                     Date date = new Date(t.getLong(0));
                     String string_date = dateformat.format(date);
-
+                    //Emit al Bolt successivo
                     collector.emit(new Values(t.getLong(0),t.getString(1),ship_type,t.getString(8),id,string_date));
                 }
             }

@@ -14,6 +14,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+/**
+ * Classe che permette di contare il numero di navi diverse passate in un determinato settore e fascia oraria
+ */
 public class CountBolt2  extends BaseRichBolt {
     static final String[] latID = {"A","B","C","D","E","F","G","H","I","J"};
 
@@ -77,21 +80,9 @@ public class CountBolt2  extends BaseRichBolt {
         String sea = tuple.getString(5);
         Pair<String,String> key = new Pair<String,String>(sector_id,fascia);
         String[] date_splitted = date.substring(0,8).split("-");
-
-        /**System.out.println("La chiave è presente ?  "+ counts.containsKey(key));
-
-         if(counts.containsKey(key)){
-         System.out.println("++++++++++++++++++++++++++++++++++++++\n\n\n");
-         System.out.println("ANNO ATTUALE "+counts.get(key).getValue0()+"   ANNO TUPLA  "+date_splitted[0]);
-         System.out.println("MESE ATTUALE "+counts.get(key).getValue1()+"   MESE TUPLA  "+date_splitted[1]);
-         System.out.println("GIORNO ATTUALE "+counts.get(key).getValue2()+"   GIORNO TUPLA  "+date_splitted[2]);
-         System.out.println(" VALORE CONDIZIONI  "+(!counts.get(key).getValue0().equals(date_splitted[0])
-         || !counts.get(key).getValue1().equals(date_splitted[1]) || !counts.get(key).getValue2().equals(date_splitted[2])));
-         }**/
+        //Controllo se è cambiato il giorno
         if(counts.containsKey(key) && (!counts.get(key).getValue1().equals(date_splitted[0])
                 || !counts.get(key).getValue2().equals(date_splitted[1]) || !counts.get(key).getValue3().equals(date_splitted[2]))){
-            //EMIT
-            //System.out.println("PRINT EMIT\n\n\n\n***************************************\n\n\n");
             try {
                 reset_map(date_splitted);
             } catch (ParseException e) {
@@ -99,13 +90,12 @@ public class CountBolt2  extends BaseRichBolt {
             }
 
         }
-
+        //Aggiunta se non presente della nave nel settore corrispondente e nella fascia corretta
         if(!presents.get(key).contains(ship_id)){
-            //System.out.println("PRINT ADD\n\n\n\n#########################################\n\n\n");
             presents.get(key).add(ship_id);
             Integer previus_count = counts.get(key).getValue4();
             Quintet<String,String,String,String,Integer> new_quartet = counts.get(key).setAt4(previus_count+1);
-            //System.out.println("QUARTETTO "+new_quartet+"            \n");
+
             counts.put(key,new_quartet);
         }
 
@@ -120,13 +110,8 @@ public class CountBolt2  extends BaseRichBolt {
     }
 
     public void reset_map(String[] date_splitted) throws ParseException {
-        //System.out.println("**********************NUOVO EMIT\n\n**********************");
 
         for(Pair<String,String> current_key :counts.keySet()){
-
-            /**System.out.print("DATA   "+counts.get(key).getValue0()+"/"+counts.get(key).getValue1()+"/"+counts.get(key).getValue2());
-             System.out.print("     SETTORE "+key.getValue1()+"   TIPO NAVE  "+key.getValue0());
-             System.out.print("    NUMERO NAVI    "+counts.get(key).getValue3()+"\n");**/
 
             String old_data = counts.get(current_key).getValue1()+"-"+counts.get(current_key).getValue2()+"-"+counts.get(current_key).getValue3();
             String cell = current_key.getValue0();
@@ -135,19 +120,14 @@ public class CountBolt2  extends BaseRichBolt {
             String sea = counts.get(current_key).getValue0();
             long days_to_add = date_difference(old_data,date_splitted[0]+"-"+date_splitted[1]+"-"+date_splitted[2]);
 
-            ;
-
             /*Se manca qualche giorno, faccio un emit del giorno vuoto*/
             if(days_to_add > 1){
-                System.out.println("TROVATO GIORNI MANCANTI : " + old_data + " ----- " + date_splitted[1]+"-"+date_splitted[2]);
                 for(int i = 1 ; i <= days_to_add-1;i++){
                     String date_to_add = emit_missing_days(old_data,i);
-                    System.out.println("EMESSO IL SEGUENTE GIORNO VUOTO : " + date_to_add);
                     collector.emit(new Values(date_to_add,cell,fascia,sea,"0"));
                 }
             }
-
-            //System.out.println("DATA : " + old_data + "   SETTORE :  " + cell + "    FASCIA : " + fascia +" MARE "+sea+"     VALORE : " + num_n+"\n");
+            //Emit dei dati quando cambia il giorno
             collector.emit(new Values(old_data,cell,fascia,sea,num_n));
             counts.put(current_key,new Quintet<String,String,String,String,Integer>(sea,date_splitted[0],
                     date_splitted[1],date_splitted[2],0));

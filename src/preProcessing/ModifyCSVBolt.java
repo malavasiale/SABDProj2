@@ -13,6 +13,10 @@ import java.util.Date;
 import java.io.FileWriter;
 import java.io.IOException;
 
+/**
+ * Classe che permette di modificare il formato della data da dd-MM-yy a yy-MM-dd per poter effettuare un ordinamento più semplice
+ * per poi scriverlo successivamente su file
+ */
 public class ModifyCSVBolt extends BaseBasicBolt {
 
     CSVWriter writer;
@@ -29,7 +33,6 @@ public class ModifyCSVBolt extends BaseBasicBolt {
             currentline[5] = tuple.getString(5);
             currentline[6] = tuple.getString(6);
             String timestamp = tuple.getString(7);
-            System.out.println("HO LETTO LA DATA : " + timestamp);
             SimpleDateFormat input_format1=new SimpleDateFormat("dd-MM-yy HH:mm");
             SimpleDateFormat input_format2=new SimpleDateFormat("dd/MM/yy HH:mm");
 

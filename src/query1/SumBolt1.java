@@ -18,6 +18,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Classe che permette di sommare i dati di un determinato settore e per ogni tipologia di nave per ogni settimana o mese
+ */
 public class SumBolt1 extends BaseRichBolt {
 
     OutputCollector collector;
@@ -35,6 +38,10 @@ public class SumBolt1 extends BaseRichBolt {
 
     Integer days_for_mode;
 
+    /**
+     * Costruttore
+     * @param mode
+     */
     public SumBolt1(String mode){
         if(mode.equals("week")){
             this.size_for_mode = 28;
@@ -68,15 +75,15 @@ public class SumBolt1 extends BaseRichBolt {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+        //Prendere tutte le chiavi presenti nell'HashMap
         for(Triplet<String,Long,Long> key : days_counts.keySet()){
-            /*Se il sector_id è già presente e il timestamp sta nel range, allora aggiungo il valore alla lista*/
+            //Se il sector_id è già presente e il timestamp sta nel range, allora aggiungo il valore alla lista
             if(key.getValue0().equals(sector_id) && timestamp >= key.getValue1() && timestamp < key.getValue2()){
                 found = true;
-                //System.out.println("**********TROVATO NUOVO ELEMENTO DELLA SETTIMANA  : " + key.toString() + "******************");
                 days_counts.get(key).add(new Pair<String,Integer>(ship_type,count));
-                //System.out.println("AGGIUNTO NUOVO ELEMENTO ALLA SETTIMANA "+key+"-- LISTA :"+ days_counts.get(key).toString());
 
                 /*Calcolo ed emit tupla finale*/
+                //Controllo per verificare che tutti i dati di una settimana o di un mese sono arrivati per il calcolo della media
                 if(days_counts.get(key).size() == size_for_mode){
                     System.out.println("ts,sector_id,militare,passeggeri,cargo,other");
                     ArrayList<Pair<String,Integer>> to_scroll = days_counts.get(key);
@@ -93,8 +100,6 @@ public class SumBolt1 extends BaseRichBolt {
                         Double mean = (sum/ days_for_mode)*1.0;
                         row = row +","+ type + "," + mean;
                     }
-                    /*PRINT RIGA FINALE*/
-                    System.out.println(row);
                     collector.emit(new Values(row));
                     days_counts.remove(key);
                 }
@@ -107,7 +112,6 @@ public class SumBolt1 extends BaseRichBolt {
             Triplet<String,Long,Long> new_key = new Triplet<String,Long,Long>(sector_id,timestamp,timestamp+ millis_mode);
             ArrayList<Pair<String,Integer>> new_list = new ArrayList<Pair<String,Integer>>();
             new_list.add(new Pair<String,Integer>(ship_type,count));
-            //System.out.println("-------------AGGIUNTO NUOVA SETTIMANA CON KEY : "+new_key.toString()+"-------------------------");
             days_counts.put(new_key,new_list);
         }
 

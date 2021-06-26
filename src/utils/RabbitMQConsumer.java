@@ -1,8 +1,12 @@
 package utils;
 
-import utils.RabbitMQManager;
-
 public class RabbitMQConsumer {
+
+    /**
+     * Classe che permette di leggere i dati da una coda RabbitMQ
+     * @param args
+     * @throws InterruptedException
+     */
 
     public static void main(String[] args) throws InterruptedException {
 

@@ -20,6 +20,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Classe che somma il numero di navi diverse passate in un settore e in una determinata fascia oraria
+ */
 public class SumBolt2 extends BaseRichBolt {
 
     OutputCollector collector;
@@ -34,8 +37,10 @@ public class SumBolt2 extends BaseRichBolt {
     Integer size_for_mode;
     long millis_mode;
 
-    /*TODO: inizializzare a seconda se settimanale o mensile*/
-
+    /**
+     * Costruttore
+     * @param mode
+     */
     public SumBolt2(String mode){
         if(mode.equals("week")){
             this.size_for_mode = 7;
@@ -60,13 +65,12 @@ public class SumBolt2 extends BaseRichBolt {
         String fascia = tuple.getString(2);
         String sea = tuple.getString(3);
         Integer count = Integer.parseInt(tuple.getString(4));
-
+        //Raccolta informazioni necessarie
         long timestamp = 0;
         boolean found = false;
         try {
             Date d = format.parse(date);
             timestamp = d.getTime();
-            //System.out.println(date+" "+timestamp);
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -81,12 +85,10 @@ public class SumBolt2 extends BaseRichBolt {
                 Integer num_tuple = days_counts.get(key).getValue1();
                 days_counts.put(key,new Pair<Integer,Integer>(old_number+count,num_tuple+1));
 
-                //System.out.println("AGGIUNTO NUOVO ELEMENTO ALLA SETTIMANA "+key+"-- LISTA :"+ days_counts.get(key).toString()+" IL SETTORE ARRIVATO È "+sector_id+" FASCIA ARRIVATA È "+fascia);
 
                 /*Calcolo ed emit tupla finale*/
                 if(days_counts.get(key).getValue1().equals(size_for_mode)){
-                    //System.out.println("FINITA SETTIMANA "+timestamp+ "   FASCIA "+fascia+"   SECTOR_ID "+sector_id+"   MARE "+sea+"  NUM "+days_counts.get(key).getValue0()+" ULTIMA DATA"+date);// modificare
-
+                    //Emit quando sono arrivati tutti i dati settimanali o mensili
                     collector.emit(new Values(key.getValue1(),fascia,sector_id,sea,days_counts.get(key).getValue0()));
                     days_counts.remove(key);
                 }

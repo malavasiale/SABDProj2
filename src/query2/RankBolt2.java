@@ -14,9 +14,11 @@ import org.javatuples.Triplet;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+/**
+ * Classe che permette di ordinare i settori in base al numero di navi diverse presenti nelle varie ore
+ */
 public class RankBolt2 extends BaseRichBolt {
     private SimpleDateFormat format = new SimpleDateFormat("yy-MM-dd");
-    String ordine = "timestamp"+"fascia"+"sector_id"+"sea"+"total";
     /*
     HashMap :
         -Key : TimeStamp, mare, fascia
@@ -38,9 +40,11 @@ public class RankBolt2 extends BaseRichBolt {
         String sea = tuple.getString(3);
         Integer total = tuple.getInteger(4);
         Triplet<Long,String,String> current_key = new Triplet<Long,String,String>(timestamp,sea,fascia);
+        //Controllo se non è stato ancora inserito nessun dato nell'HashMap
         if(collect.get(current_key) !=null){
             collect.get(current_key).add(new Pair<String,Integer>(sector_id,total));
         }else{
+            //Aggiornamento lista
             ArrayList<Pair<String,Integer>> current_list = new ArrayList<Pair<String,Integer>>();
             current_list.add(new Pair<String,Integer>(sector_id,total));
             collect.put(current_key,current_list);
@@ -53,7 +57,9 @@ public class RankBolt2 extends BaseRichBolt {
                 other_fascia = "prima";
             }
             Triplet<Long,String,String> other_key = new Triplet<Long,String,String>(timestamp,sea,other_fascia);
+            //Controllo arrivo di tutti i dati
             if(collect.get(current_key).size() == 170 && collect.get(other_key).size() == 170){
+                //Ordinamento rispetto al totale
                 collect.get(current_key).sort(new Comparator<Pair<String,Integer>>() {
                     @Override
                     public int compare(Pair<String, Integer> t0, Pair<String, Integer> t1) {
@@ -84,7 +90,7 @@ public class RankBolt2 extends BaseRichBolt {
                 });
                 Date d = new Date(current_key.getValue0());
                 this.format.format(d);
-
+                //Creazione riga per emissione su Rabbit
                 String row = "";
                 if(other_fascia.equals("seconda")){
                     row = d+","+sea+","+fascia+","+collect.get(current_key).get(0).getValue0()+"--"+collect.get(current_key).get(1).getValue0()+ "--"+collect.get(current_key).get(2).getValue0()+","+
@@ -144,9 +150,6 @@ public class RankBolt2 extends BaseRichBolt {
                     row = d+","+sea+","+other_fascia+","+collect.get(other_key).get(0).getValue0()+"--"+collect.get(other_key).get(1).getValue0()+ "--"+collect.get(other_key).get(2).getValue0()+","+
                             fascia+","+collect.get(current_key).get(0).getValue0()+"--"+collect.get(current_key).get(1).getValue0()+ "--"+collect.get(current_key).get(2).getValue0();
                 }
-                //System.out.println("Data Iniziale "+d+" Orientale :\n"+"Fascia: "+fascia+"\n"+"Settori: "+collect.get(current_key).get(0).getValue0()+" "+collect.get(current_key).get(1).getValue0()+ " "+collect.get(current_key).get(2).getValue0()+" Con valori" +
-                //" "+collect.get(current_key).get(0).getValue1()+" "+collect.get(current_key).get(1).getValue1()+" "+collect.get(current_key).get(2).getValue1()+"\n");
-
                 collector.emit(new Values(row));
                 collect.remove(current_key);
                 collect.remove(other_key);

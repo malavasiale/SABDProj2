@@ -11,8 +11,6 @@ import org.apache.storm.windowing.TimestampExtractor;
 public class Query1Topology {
 
     public static void main(String[] args){
-        //TODO AGGIUNGERE IN COUNTBOLT FIELD "SECTOR_ID" AGGIUNGERE LA PARTE CHE INSERISCE I GIORNI MANCANTI E MODIFICIARE
-        // IL NUMERO DI TUPLE ATTESE IN SUM = VALORE CORRENTE*NUMERO REPLICHE COUNTBOLT
         TopologyBuilder builder = new TopologyBuilder();
 
         builder.setSpout("source",new ReaderCSVSpout1(),1);

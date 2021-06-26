@@ -19,6 +19,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 
+/**
+ * Classe che permette di leggere il file csv, per poi inviare le singole tuple al bolt successivo
+ */
 public class ReaderCSVSpout1 extends BaseRichSpout {
     private FileReader filereader;
     private CSVReader csvReader;
@@ -61,9 +64,8 @@ public class ReaderCSVSpout1 extends BaseRichSpout {
             if((row = csvReader.readNext()) != null){
                 Date d = format.parse(row[7]);
                 long timestamp = d.getTime();
-                //System.out.println("DATA CORRENTE "+d.toString()+"  DATA LIMITE "+date_start.toString()+" è successiva? "+d.after(date_start));
+                //Condizione che permette di inviare i dati dopo una certa data scelta
                 if(d.after(date_start)){
-                    //System.out.println("  \nSTO INVIANDO"+d.toString()+"\n");
                     _collector.emit(new Values(timestamp,row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7],row[8],row[9],row[10]));
                 }
             }

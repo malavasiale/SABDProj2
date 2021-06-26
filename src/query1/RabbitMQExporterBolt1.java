@@ -4,12 +4,9 @@ import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.topology.base.BaseRichBolt;
-import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import utils.RabbitMQManager;
 
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.Map;
 
 /*
@@ -29,7 +26,6 @@ public class RabbitMQExporterBolt1 extends BaseRichBolt {
     private String rabbitMqUsername;
     private String rabbitMqPassword;
     private String defaultQueue;
-    FileWriter myWriter;
 
     public RabbitMQExporterBolt1(String rabbitMqHost, String rabbitMqUsername, String rabbitMqPassword,
                                  String defaultQueue) {

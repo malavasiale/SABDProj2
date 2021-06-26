@@ -16,10 +16,16 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Map;
 
+
+/**
+ * Classe utilizzata per legge il file CSV
+ */
 public class ReaderCSVSpout extends BaseRichSpout {
     private FileReader filereader;
     private CSVReader csvReader;
     private SpoutOutputCollector _collector;
+
+
 
     @Override
     public void open(Map map, TopologyContext topologyContext, SpoutOutputCollector spoutOutputCollector) {

@@ -9,14 +9,14 @@ import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
 import org.javatuples.Pair;
 import org.javatuples.Quartet;
-import org.javatuples.Quintet;
-import org.javatuples.Sextet;
 
-import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+/**
+ * Classe che permette di calcolare il numero di navi per ogni tipo presenti in ogni settore
+ */
 public class CountBolt1 extends BaseRichBolt {
     static final String[] latID = {"A","B","C","D","E","F","G","H","I","J"};
     static final String[] ship_types ={"militare","passeggeri","cargo","other"};
@@ -49,7 +49,7 @@ public class CountBolt1 extends BaseRichBolt {
 
     @Override
     public void execute(Tuple tuple) {
-
+        //Vengono presi tutti i dati utili per contare il numero di navi in un settore per un determinato tipo
         String sector_id = tuple.getString(4);
         String ship_type = tuple.getString(2);
         String ship_id =  tuple.getString(1);
@@ -60,20 +60,10 @@ public class CountBolt1 extends BaseRichBolt {
             isFirst(date_splitted[0],date_splitted[1],date_splitted[2]);
             first = false;
         }
-        /**System.out.println("La chiave è presente ?  "+ counts.containsKey(key));
-
-        if(counts.containsKey(key)){
-            System.out.println("++++++++++++++++++++++++++++++++++++++\n\n\n");
-            System.out.println("ANNO ATTUALE "+counts.get(key).getValue0()+"   ANNO TUPLA  "+date_splitted[0]);
-            System.out.println("MESE ATTUALE "+counts.get(key).getValue1()+"   MESE TUPLA  "+date_splitted[1]);
-            System.out.println("GIORNO ATTUALE "+counts.get(key).getValue2()+"   GIORNO TUPLA  "+date_splitted[2]);
-            System.out.println(" VALORE CONDIZIONI  "+(!counts.get(key).getValue0().equals(date_splitted[0])
-                    || !counts.get(key).getValue1().equals(date_splitted[1]) || !counts.get(key).getValue2().equals(date_splitted[2])));
-        }**/
+        //Controllo se è già arrivata una tupla con lo stesso tipo di nave e stesso settore
+        //Ma con giorno diverso
         if(counts.containsKey(key) && (!counts.get(key).getValue0().equals(date_splitted[0])
                 || !counts.get(key).getValue1().equals(date_splitted[1]) || !counts.get(key).getValue2().equals(date_splitted[2]))){
-            //EMIT
-            //System.out.println("PRINT EMIT\n\n\n\n***************************************\n\n\n");
             try {
                 reset_map(date_splitted);
             } catch (ParseException e) {
@@ -82,13 +72,12 @@ public class CountBolt1 extends BaseRichBolt {
 
         }
 
-
+        //Controllo se una nave è già stata assegnata ad un settore
         if(!presents.get(sector_id).contains(ship_id)){
-            //System.out.println("PRINT ADD\n\n\n\n#########################################\n\n\n");
+            //Aggiunta nave al settore
             presents.get(sector_id).add(ship_id);
             Integer previus_count = counts.get(key).getValue3();
             Quartet<String,String,String,Integer> new_quartet = counts.get(key).setAt3(previus_count+1);
-            //System.out.println("QUARTETTO "+new_quartet+"            \n");
             counts.put(key,new_quartet);
         }
 
@@ -103,14 +92,9 @@ public class CountBolt1 extends BaseRichBolt {
     }
 
     public void reset_map(String[] date_splitted) throws ParseException {
-        //System.out.println("**********************NUOVO EMIT\n\n**********************");
-
+        //Metodo per reset l'HashMap ed emettere i dati di un giorno
         for(Pair<String,String> current_key :counts.keySet()){
-
-            /**System.out.print("DATA   "+counts.get(key).getValue0()+"/"+counts.get(key).getValue1()+"/"+counts.get(key).getValue2());
-            System.out.print("     SETTORE "+key.getValue1()+"   TIPO NAVE  "+key.getValue0());
-            System.out.print("    NUMERO NAVI    "+counts.get(key).getValue3()+"\n");**/
-
+            //Valori utili per il controllo e l'emit
             String old_data = counts.get(current_key).getValue0()+"-"+counts.get(current_key).getValue1()+"-"+counts.get(current_key).getValue2();
             String cell = current_key.getValue1();
             String type_n = current_key.getValue0();
@@ -118,10 +102,6 @@ public class CountBolt1 extends BaseRichBolt {
             /**
             long days_to_add = date_difference(old_data,date_splitted[0]+"-"+date_splitted[1]+"-"+date_splitted[2]);
             //System.out.println("DATA : " + data + "   SETTORE :  " + cell + "    TIPO : " + type_n + "     VALORE : " + num_n);
-
-
-
-
             if(days_to_add > 1){
                 System.out.println("TROVATO GIORNI MANCANTI : " + old_data + " ----- " + date_splitted[1]+"-"+date_splitted[2]);
                 for(int i = 1 ; i <= days_to_add-1;i++){
@@ -157,6 +137,13 @@ public class CountBolt1 extends BaseRichBolt {
         return difference_days;
     }
 
+    /**
+     * Metodo per emetterre giorni mancanti
+     * @param start_data
+     * @param days_to_add
+     * @return String
+     * @throws ParseException
+     */
     public String emit_missing_days(String start_data,int days_to_add) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("yy-MM-dd");
         Calendar c = Calendar.getInstance();
@@ -165,6 +152,12 @@ public class CountBolt1 extends BaseRichBolt {
         return sdf.format(c.getTime());
     }
 
+    /**
+     * Metodo per inizializzare i settori dei Mar Mediterraneo
+     * @param year
+     * @param month
+     * @param day
+     */
     public void isFirst(String year,String month, String day){
 
         for(String lat : latID){
