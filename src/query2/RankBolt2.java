@@ -46,8 +46,29 @@ public class RankBolt2 extends BaseRichBolt {
             collect.put(current_key,current_list);
         }
         if(sea.equals("occidentale")){
-            if(collect.get(current_key).size() == 170){
+            String other_fascia = "";
+            if(fascia.equals("prima")){
+                other_fascia = "seconda";
+            }else{
+                other_fascia = "prima";
+            }
+            Triplet<Long,String,String> other_key = new Triplet<Long,String,String>(timestamp,sea,other_fascia);
+            if(collect.get(current_key).size() == 170 && collect.get(other_key).size() == 170){
                 collect.get(current_key).sort(new Comparator<Pair<String,Integer>>() {
+                    @Override
+                    public int compare(Pair<String, Integer> t0, Pair<String, Integer> t1) {
+                        if (t0.getValue1() > t1.getValue1()) {
+                            return -1;
+                        } else if (t0.getValue1()==t1.getValue1()) {
+                            return 0; // You can change this to make it then look at the
+                            //words alphabetical order
+                        } else {
+                            return 1;
+                        }
+                    }
+
+                });
+                collect.get(other_key).sort(new Comparator<Pair<String,Integer>>() {
                     @Override
                     public int compare(Pair<String, Integer> t0, Pair<String, Integer> t1) {
                         if (t0.getValue1() > t1.getValue1()) {
@@ -64,14 +85,42 @@ public class RankBolt2 extends BaseRichBolt {
                 Date d = new Date(current_key.getValue0());
                 this.format.format(d);
 
-                //System.out.println("Data Iniziale "+d+" Occidentale :\n"+"Fascia: "+fascia+"\n"+"Settori: "+collect.get(current_key).get(0).getValue0()+" "+collect.get(current_key).get(1).getValue0()+ " "+collect.get(current_key).get(2).getValue0()+" Con valori" +
-                  //      " "+collect.get(current_key).get(0).getValue1()+" "+collect.get(current_key).get(1).getValue1()+" "+collect.get(current_key).get(2).getValue1()+"\n");
-                String row = d+","+sea+","+fascia+","+collect.get(current_key).get(0).getValue0()+"--"+collect.get(current_key).get(1).getValue0()+ "--"+collect.get(current_key).get(2).getValue0()+","+collect.get(current_key).get(0).getValue1()+"--"+collect.get(current_key).get(1).getValue1()+"--"+collect.get(current_key).get(2).getValue1();
+                String row = "";
+                if(other_fascia.equals("seconda")){
+                    row = d+","+sea+","+fascia+","+collect.get(current_key).get(0).getValue0()+"--"+collect.get(current_key).get(1).getValue0()+ "--"+collect.get(current_key).get(2).getValue0()+","+
+                            other_fascia+","+collect.get(other_key).get(0).getValue0()+"--"+collect.get(other_key).get(1).getValue0()+ "--"+collect.get(other_key).get(2).getValue0();
+                }else{
+                    row = d+","+sea+","+other_fascia+","+collect.get(other_key).get(0).getValue0()+"--"+collect.get(other_key).get(1).getValue0()+ "--"+collect.get(other_key).get(2).getValue0()+","+
+                            fascia+","+collect.get(current_key).get(0).getValue0()+"--"+collect.get(current_key).get(1).getValue0()+ "--"+collect.get(current_key).get(2).getValue0();
+                }
                 collector.emit(new Values(row));
+                collect.remove(current_key);
+                collect.remove(other_key);
             }
         }else{
-            if(collect.get(current_key).size() == 230){
+            String other_fascia = "";
+            if(fascia.equals("prima")){
+                other_fascia = "seconda";
+            }else{
+                other_fascia = "prima";
+            }
+            Triplet<Long,String,String> other_key = new Triplet<Long,String,String>(timestamp,sea,other_fascia);
+            if(collect.get(current_key).size() == 230 && collect.get(other_key).size() == 230){
                 collect.get(current_key).sort(new Comparator<Pair<String,Integer>>() {
+                    @Override
+                    public int compare(Pair<String, Integer> t0, Pair<String, Integer> t1) {
+                        if (t0.getValue1() > t1.getValue1()) {
+                            return -1;
+                        } else if (t0.getValue1()==t1.getValue1()) {
+                            return 0; // You can change this to make it then look at the
+                            //words alphabetical order
+                        } else {
+                            return 1;
+                        }
+                    }
+
+                });
+                collect.get(other_key).sort(new Comparator<Pair<String,Integer>>() {
                     @Override
                     public int compare(Pair<String, Integer> t0, Pair<String, Integer> t1) {
                         if (t0.getValue1() > t1.getValue1()) {
@@ -87,11 +136,20 @@ public class RankBolt2 extends BaseRichBolt {
                 });
                 Date d = new Date(current_key.getValue0());
                 this.format.format(d);
-
+                String row = "";
+                if(other_fascia.equals("seconda")){
+                    row = d+","+sea+","+fascia+","+collect.get(current_key).get(0).getValue0()+"--"+collect.get(current_key).get(1).getValue0()+ "--"+collect.get(current_key).get(2).getValue0()+","+
+                            other_fascia+","+collect.get(other_key).get(0).getValue0()+"--"+collect.get(other_key).get(1).getValue0()+ "--"+collect.get(other_key).get(2).getValue0();
+                }else{
+                    row = d+","+sea+","+other_fascia+","+collect.get(other_key).get(0).getValue0()+"--"+collect.get(other_key).get(1).getValue0()+ "--"+collect.get(other_key).get(2).getValue0()+","+
+                            fascia+","+collect.get(current_key).get(0).getValue0()+"--"+collect.get(current_key).get(1).getValue0()+ "--"+collect.get(current_key).get(2).getValue0();
+                }
                 //System.out.println("Data Iniziale "+d+" Orientale :\n"+"Fascia: "+fascia+"\n"+"Settori: "+collect.get(current_key).get(0).getValue0()+" "+collect.get(current_key).get(1).getValue0()+ " "+collect.get(current_key).get(2).getValue0()+" Con valori" +
                 //" "+collect.get(current_key).get(0).getValue1()+" "+collect.get(current_key).get(1).getValue1()+" "+collect.get(current_key).get(2).getValue1()+"\n");
-                String row = d+","+sea+","+fascia+","+collect.get(current_key).get(0).getValue0()+"--"+collect.get(current_key).get(1).getValue0()+ "--"+collect.get(current_key).get(2).getValue0()+","+collect.get(current_key).get(0).getValue1()+"--"+collect.get(current_key).get(1).getValue1()+"--"+collect.get(current_key).get(2).getValue1();
+
                 collector.emit(new Values(row));
+                collect.remove(current_key);
+                collect.remove(other_key);
             }
         }
     }
