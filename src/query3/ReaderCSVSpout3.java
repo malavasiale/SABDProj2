@@ -62,17 +62,15 @@ public class ReaderCSVSpout3 extends BaseRichSpout {
 
             if((row = csvReader.readNext()) != null){
 
-                //System.out.println("DATA CORRENTE "+d.toString()+"  DATA LIMITE "+date_start.toString()+" è successiva? "+d.after(date_start));
-                Date d = format.parse(row[7]);
+                Date d = format.parse(row[4]);
                 long timestamp = d.getTime();
-                //System.out.println("DATA CORRENTE "+d.toString()+"  DATA LIMITE "+date_start.toString()+" è successiva? "+d.after(date_start));
+                //Condizione che permette di inviare i dati dopo una certa data scelta
                 if(d.after(date_start)){
-                    //System.out.println("  \nSTO INVIANDO"+d.toString()+"\n");
-                    _collector.emit(new Values(timestamp,row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7],row[8],row[9],row[10]));
+                    _collector.emit(new Values(timestamp,row[0],row[1],row[2],row[3],row[4],row[5]));
                 }
-
-
             }
+
+
         } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
@@ -80,7 +78,7 @@ public class ReaderCSVSpout3 extends BaseRichSpout {
 
     @Override
     public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer) {
-        outputFieldsDeclarer.declare(new Fields("timestamp","ship_id","ship_type","speed","lon",
-                "lat","course","heading","date","depart_port","draught","trip_id"));
+        outputFieldsDeclarer.declare(new Fields("timestamp","ship_id","ship_type","lon","lat",
+                "data","trip_id"));
     }
 }

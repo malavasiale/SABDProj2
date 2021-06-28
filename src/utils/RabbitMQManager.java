@@ -143,7 +143,6 @@ public class RabbitMQManager {
                 public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties,
                                            byte[] body) throws IOException {
                     String message = new String(body, "UTF-8");
-                    message = System.currentTimeMillis() + "," + message;
                     System.out.println(message);
                 }
             };

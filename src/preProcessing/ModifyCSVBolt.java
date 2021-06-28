@@ -23,16 +23,14 @@ public class ModifyCSVBolt extends BaseBasicBolt {
     @Override
     public void execute(Tuple tuple, BasicOutputCollector basicOutputCollector) {
         try {
-            writer = new CSVWriter(new FileWriter("/data/dataset.csv",true),CSVWriter.DEFAULT_SEPARATOR,CSVWriter.NO_QUOTE_CHARACTER);
-            String[] currentline = new String[11];
-            currentline[0] = tuple.getString(0);
-            currentline[1] = tuple.getString(1);
-            currentline[2] = tuple.getString(2);
-            currentline[3] = tuple.getString(3);
-            currentline[4] = tuple.getString(4);
-            currentline[5] = tuple.getString(5);
-            currentline[6] = tuple.getString(6);
-            String timestamp = tuple.getString(7);
+            writer = new CSVWriter(new FileWriter("../data/dataset.csv",true),CSVWriter.DEFAULT_SEPARATOR,CSVWriter.NO_QUOTE_CHARACTER);
+            String[] currentline = new String[6];
+            currentline[0] = tuple.getString(0); //ship_id
+            currentline[1] = tuple.getString(1); //Ship_type
+            currentline[2] = tuple.getString(2); //Lon
+            currentline[3] = tuple.getString(3); //Lat
+            currentline[5] = tuple.getString(5); //Trip_id
+            String timestamp = tuple.getString(4); //Timestamp
             SimpleDateFormat input_format1=new SimpleDateFormat("dd-MM-yy HH:mm");
             SimpleDateFormat input_format2=new SimpleDateFormat("dd/MM/yy HH:mm");
 
@@ -44,10 +42,7 @@ public class ModifyCSVBolt extends BaseBasicBolt {
                 date = input_format2.parse(timestamp);
             }
 
-            currentline[7] = format2.format(date);
-            currentline[8] = tuple.getString(8);
-            currentline[9] = tuple.getString(9);
-            currentline[10] = tuple.getString(10);
+            currentline[4] = format2.format(date);
 
             writer.writeNext(currentline);
             writer.flush();

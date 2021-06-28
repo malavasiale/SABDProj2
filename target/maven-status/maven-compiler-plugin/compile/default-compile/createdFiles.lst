@@ -4,7 +4,9 @@ query2/RankBolt2$1.class
 utils/RabbitMQManager$1.class
 query1/CountBolt1.class
 query2/RankBolt2$3.class
+utils/MetricConsumer3.class
 query3/DistanceBolt3.class
+utils/MetricConsumer1.class
 utils/RabbitMQConsumer.class
 query3/Query3Topology$1.class
 query2/SumBolt2.class
@@ -16,7 +18,6 @@ utils/ConvertToSector.class
 utils/SorterCSV$1.class
 query2/Query2Topology$1.class
 query2/RankBolt2$2.class
-utils/PartialWindowRank.class
 preProcessing/PreProcessingTopology.class
 query1/Query1Topology.class
 query3/ReaderCSVSpout3.class
@@ -29,11 +30,11 @@ query1/RabbitMQExporterBolt1.class
 query2/CountBolt2.class
 query2/SectorConverterBolt2.class
 query1/ReaderCSVSpout1.class
+utils/MetricConsumer2.class
 query3/PartialRanckBolt3.class
 preProcessing/ModifyCSVBolt.class
 query2/RankBolt2$4.class
 query2/RankBolt2.class
-preProcessing/WriteCSVBolt.class
 utils/SorterCSV.class
 query3/GlobalRank3.class
 query1/Query1Topology$1.class

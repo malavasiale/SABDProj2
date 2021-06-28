@@ -7,9 +7,11 @@ import org.apache.storm.topology.base.BaseWindowedBolt;
 import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.windowing.TimestampExtractor;
+import utils.MetricConsumer1;
+import utils.MetricConsumer2;
 
 public class Query2Topology {
-
+    //TODO scrivere file con throughput e latenza facendo variare parallelism sum 1-3 (vedi un pò) rank 1-2
     public static void main(String[] args){
 
         TopologyBuilder builder = new TopologyBuilder();
@@ -43,6 +45,8 @@ public class Query2Topology {
         Config conf = new Config();
         conf.put(Config.TOPOLOGY_ENABLE_MESSAGE_TIMEOUTS,false);
         conf.put(Config.TOPOLOGY_DEBUG,false);
+        conf.registerMetricsConsumer(MetricConsumer2.class,1);
+        conf.put(Config.TOPOLOGY_BUILTIN_METRICS_BUCKET_SIZE_SECS,30);
         conf.setMaxTaskParallelism(3);
         LocalCluster cluster = new LocalCluster();
         cluster.submitTopology("query2", conf, builder.createTopology());

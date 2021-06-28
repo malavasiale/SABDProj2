@@ -85,7 +85,6 @@ public class SumBolt1 extends BaseRichBolt {
                 /*Calcolo ed emit tupla finale*/
                 //Controllo per verificare che tutti i dati di una settimana o di un mese sono arrivati per il calcolo della media
                 if(days_counts.get(key).size() == size_for_mode){
-                    System.out.println("ts,sector_id,militare,passeggeri,cargo,other");
                     ArrayList<Pair<String,Integer>> to_scroll = days_counts.get(key);
                     Date d = new Date(key.getValue1());
                     this.format.format(d);

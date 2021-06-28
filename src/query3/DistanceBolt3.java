@@ -38,15 +38,14 @@ public class DistanceBolt3 extends BaseWindowedBolt {
      */
     Map<String, Quintet<Double,Double,Long,Double,Long>> active_trip = new HashMap<String,Quintet<Double,Double,Long,Double,Long>>();
 
-    public DistanceBolt3(String intervallo){
-        this.intervallo_num = Integer.parseInt(intervallo);
-    }
+    public DistanceBolt3(String intervallo) throws ParseException {
 
-    public DistanceBolt3() throws ParseException {
+        this.intervallo_num = Integer.parseInt(intervallo);
         date_start = format.parse("15-03-10 12:00");
         timestamp_start = date_start.getTime();
         timestamp_final = timestamp_start + TimeUnit.HOURS.toMillis(intervallo_num);
     }
+
 
     @Override
     public void prepare(Map map, TopologyContext topologyContext, OutputCollector outputCollector) {
@@ -58,10 +57,10 @@ public class DistanceBolt3 extends BaseWindowedBolt {
 
         for( Tuple tuple : tupleWindow.get()){
             long timestamp = tuple.getLong(0);
-            Double lon = Double.parseDouble(tuple.getString(4));
-            Double lat = Double.parseDouble(tuple.getString(5));
-            String date = tuple.getString(8);
-            String trip_id = tuple.getString(11);
+            Double lon = Double.parseDouble(tuple.getString(3));
+            Double lat = Double.parseDouble(tuple.getString(4));
+            String date = tuple.getString(5);
+            String trip_id = tuple.getString(6);
             String[] trip_id_split = trip_id.split(" - ");
             String trip_id_row = trip_id_split[1];
             String trip_id_end = trip_id_row.replaceAll("_parking","");

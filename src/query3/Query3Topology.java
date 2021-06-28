@@ -8,13 +8,15 @@ import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.windowing.TimestampExtractor;
 import query2.*;
+import utils.MetricConsumer2;
+import utils.MetricConsumer3;
 
 import java.text.ParseException;
 
 public class Query3Topology {
+    //TODO scrivere file con throughput e latenza facendo variare parallelism partial 1-? (vedi un pò)
 
     public static void main(String[] args) throws ParseException {
-        //TODO Aumentare Parallelismo su Sum & Rank
         TopologyBuilder builder = new TopologyBuilder();
 
         builder.setSpout("source",new ReaderCSVSpout3(),1);
@@ -45,6 +47,8 @@ public class Query3Topology {
         Config conf = new Config();
         conf.put(Config.TOPOLOGY_ENABLE_MESSAGE_TIMEOUTS,false);
         conf.put(Config.TOPOLOGY_DEBUG,false);
+        conf.registerMetricsConsumer(MetricConsumer3.class,1);
+        conf.put(Config.TOPOLOGY_BUILTIN_METRICS_BUCKET_SIZE_SECS,30);
         conf.setMaxTaskParallelism(3);
         LocalCluster cluster = new LocalCluster();
         cluster.submitTopology("query3", conf, builder.createTopology());

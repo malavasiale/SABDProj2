@@ -1,5 +1,6 @@
 package query1;
 
+import org.apache.storm.metric.api.CountMetric;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.OutputFieldsDeclarer;
@@ -26,6 +27,7 @@ public class RabbitMQExporterBolt1 extends BaseRichBolt {
     private String rabbitMqUsername;
     private String rabbitMqPassword;
     private String defaultQueue;
+    private transient CountMetric metric;
 
     public RabbitMQExporterBolt1(String rabbitMqHost, String rabbitMqUsername, String rabbitMqPassword,
                                  String defaultQueue) {
@@ -39,6 +41,8 @@ public class RabbitMQExporterBolt1 extends BaseRichBolt {
     @Override
     public void prepare(@SuppressWarnings("rawtypes") Map map, TopologyContext topologyContext, OutputCollector outputCollector) {
 
+        this.metric = new CountMetric();
+        topologyContext.registerMetric("Throughput",metric,30);
         this.collector=outputCollector;
         this.rabbitmq = new RabbitMQManager(rabbitMqHost, rabbitMqUsername, rabbitMqPassword, defaultQueue);
 
@@ -46,7 +50,7 @@ public class RabbitMQExporterBolt1 extends BaseRichBolt {
 
     @Override
     public void execute(Tuple tuple) {
-
+        metric.incr();
         String output = tuple.getString(0);
         rabbitmq.send("query1",output);
 

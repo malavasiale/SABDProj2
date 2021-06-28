@@ -30,12 +30,12 @@ public class SectorConverterBolt2 extends BaseWindowedBolt {
     @Override
     public void execute(TupleWindow tupleWindow) {
         for(Tuple t : tupleWindow.get()){
-            String slat = t.getString(5);
-            String slon = t.getString(4);
+            String slat = t.getString(4);
+            String slon = t.getString(3);
             //Conversione lato,lon in sector_id
             String id = ConvertToSector.convertPointToSector(Double.parseDouble(slat),Double.parseDouble(slon));
 
-            String fascia_oraria = ConvertToSector.convertOrarioToFascia(t.getString(8));
+            String fascia_oraria = ConvertToSector.convertOrarioToFascia(t.getString(5));
             String sea;
             if(id.length()<5) { // perchè devo eliminare i dati non validi
                 //Verificare se il settore appartiene al mare occidentale o orientale
@@ -44,7 +44,7 @@ public class SectorConverterBolt2 extends BaseWindowedBolt {
                 } else {
                     sea = "orientale";
                 }
-                collector.emit(new Values(t.getLong(0),t.getString(1),fascia_oraria,t.getString(8),id,sea));
+                collector.emit(new Values(t.getLong(0),t.getString(1),fascia_oraria,t.getString(5),id,sea));
             }
 
         }

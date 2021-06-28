@@ -33,8 +33,8 @@ public class SectorConverterBolt1 extends BaseWindowedBolt {
     public void execute(TupleWindow tupleWindow) {
         for(Tuple t : tupleWindow.get()){
             //Vengono prese la latitudine e la longitudine della tupla
-            String slat = t.getString(5);
-            String slon = t.getString(4);
+            String slat = t.getString(4);
+            String slon = t.getString(3);
             //Conversione (lat,lon) --> Secot_id
             String id = ConvertToSector.convertPointToSector(Double.parseDouble(slat),Double.parseDouble(slon));
             //Controllo per evitare di passere dati non validi
@@ -46,7 +46,7 @@ public class SectorConverterBolt1 extends BaseWindowedBolt {
                     Date date = new Date(t.getLong(0));
                     String string_date = dateformat.format(date);
                     //Emit al Bolt successivo
-                    collector.emit(new Values(t.getLong(0),t.getString(1),ship_type,t.getString(8),id,string_date));
+                    collector.emit(new Values(t.getLong(0),t.getString(1),ship_type,t.getString(5),id,string_date));
                 }
             }
 
