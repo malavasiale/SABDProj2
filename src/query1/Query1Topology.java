@@ -10,7 +10,6 @@ import org.apache.storm.windowing.TimestampExtractor;
 import utils.MetricConsumer1;
 
 public class Query1Topology {
-    //TODO scrivere file con throughput e latenza facendo variare parallelism sum 1-3 (vedi un pò )
 
     public static void main(String[] args){
         TopologyBuilder builder = new TopologyBuilder();

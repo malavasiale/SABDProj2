@@ -46,8 +46,9 @@ public class PartialRanckBolt3 extends BaseRichBolt {
         String trip_id = tuple.getString(1);
         Long windowStart = tuple.getLong(0);
         Double distance = tuple.getDouble(2);
-        //System.out.println("TUPLA ARRIVATA "+tuple.toString()+"\n");
+
         if(windowStart > timestamp_start){
+            //Controllo per evitare di fare il sort con una lista con pochi elementi
             if(!(array_window.size()==0) || !(array_window.size() ==1)){
                 array_window.sort(new Comparator<Pair<String,Double>>() {
                     @Override
@@ -57,25 +58,19 @@ public class PartialRanckBolt3 extends BaseRichBolt {
                     }
                 });
             }
-            //System.out.println("TIMESTAMP ARRAYLIST DA INVIARE "+ timestamp_start+"   "+array_window.toString()+"\n");
             outputCollector.emit(new Values(array_window,timestamp_start));
+            //Aggiornamento unova finestra temporale
             timestamp_start = timestamp_start +TimeUnit.HOURS.toMillis(intervallo_num);
             array_window = new ArrayList<Pair<String,Double>>();
+            //Invio Finestre temporali nulle
             while (windowStart > timestamp_start){
-                //System.out.println("TIMESTAMP ARRAYLIST DA INVIARE "+ timestamp_start+"   "+array_window.toString()+"\n");
                 outputCollector.emit(new Values(array_window,timestamp_start));
                 timestamp_start = timestamp_start +TimeUnit.HOURS.toMillis(intervallo_num);
             }
         }
 
         Pair<String,Double> current_pair = new Pair<String,Double>(trip_id,distance);
-        //System.out.println(current_pair.toString()+" Lista "+array_window.toString()+"\n");
         array_window.add(current_pair);
-
-
-
-
-        //System.out.println("È ARRIVATO IL VIAGGIO "+trip_id+" APPERTENENTE ALLA FINESTRA CON TIME INIZIALE "+ windowStart+ " CON DISTANZA "+distance);
     }
 
     @Override

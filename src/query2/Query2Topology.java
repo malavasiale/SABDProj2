@@ -11,7 +11,7 @@ import utils.MetricConsumer1;
 import utils.MetricConsumer2;
 
 public class Query2Topology {
-    //TODO scrivere file con throughput e latenza facendo variare parallelism sum 1-3 (vedi un pò) rank 1-2
+
     public static void main(String[] args){
 
         TopologyBuilder builder = new TopologyBuilder();

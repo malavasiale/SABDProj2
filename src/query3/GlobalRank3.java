@@ -59,16 +59,11 @@ public class GlobalRank3 extends BaseRichBolt {
                     }
                     row = row+","+new_list.get(i).getValue0()+","+new_list.get(i).getValue1().toString();
                 }
-                //System.out.println(row+"\n");
                 collector.emit(new Values(row));
                 sorted_lists.remove(timestamp);
             }
-            //TODO AGGIUNGERE ULTERIORE ELEMENTO CON REPLICHE >2 ( SE LO VOGLIAMO FARE )
 
         }
-
-
-
     }
 
     @Override

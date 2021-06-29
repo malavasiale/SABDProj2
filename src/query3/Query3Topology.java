@@ -14,7 +14,6 @@ import utils.MetricConsumer3;
 import java.text.ParseException;
 
 public class Query3Topology {
-    //TODO scrivere file con throughput e latenza facendo variare parallelism partial 1-? (vedi un pò)
 
     public static void main(String[] args) throws ParseException {
         TopologyBuilder builder = new TopologyBuilder();
