@@ -93,7 +93,6 @@ public class DistanceBolt3 extends BaseWindowedBolt {
                     //Emissione verso il bolt successivo
                     long end = System.nanoTime();
                     latency.setValue(new Long(end-start));
-                    start = 0;
                     outputCollector.emit(new Values(windowTimestamp,trip_id_current,current_dist));
                     //Controllo se il viaggio è finito
                     if(current_trip_id_end<=timestamp_start){
@@ -107,8 +106,8 @@ public class DistanceBolt3 extends BaseWindowedBolt {
                         Long old_timest_fv = old_quintet.getValue4();
                         active_trip.put(trip_id_current,new Quintet<Double,Double,Long,Double,Long>(old_lat,old_lon,timestamp_start,old_distance,old_timest_fv));
                     }
-
                 }
+                start = 0;
             }
             //Aggiornamento distanza viaggio
             if(active_trip.get(trip_id) != null){

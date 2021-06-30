@@ -108,7 +108,7 @@ public class SumBolt1 extends BaseRichBolt {
                         row = row +","+ type + "," + mean;
                     }
                     long end = System.nanoTime();
-                    latency.setValue(new Long(end-start));
+                    latency.setValue(new Long((end-start)));
                     start = 0;
                     collector.emit(new Values(row));
                     days_counts.remove(key);

@@ -54,11 +54,10 @@ public class SectorConverterBolt2 extends BaseWindowedBolt {
                 }
                 long end = System.nanoTime();
                 latency.setValue(new Long(end-start));
-                start = 0;
                 collector.emit(new Values(t.getLong(0),t.getString(1),fascia_oraria,t.getString(5),id,sea));
             }
-
         }
+        start = 0;
 
     }
     @Override

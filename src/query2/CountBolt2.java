@@ -138,12 +138,12 @@ public class CountBolt2  extends BaseRichBolt {
             //Emit dei dati quando cambia il giorno
             long end = System.nanoTime();
             latency.setValue(new Long(end-start));
-            start = 0;
             collector.emit(new Values(old_data,cell,fascia,sea,num_n));
             counts.put(current_key,new Quintet<String,String,String,String,Integer>(sea,date_splitted[0],
                     date_splitted[1],date_splitted[2],0));
             presents.put(current_key, new ArrayList<String>());
         }
+        start = 0;
     }
 
     /*

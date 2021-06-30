@@ -119,13 +119,13 @@ public class CountBolt1 extends BaseRichBolt {
                 }
             }**/
             long end = System.nanoTime();
-            latency.setValue(new Long(end-start));
-            start = 0;
+            latency.setValue(new Long((end-start)));
             collector.emit(new Values(old_data,cell,type_n,num_n));
             counts.put(current_key,new Quartet<String,String,String,Integer>(date_splitted[0],
                     date_splitted[1],date_splitted[2],0));
             presents.put(current_key.getValue1(), new ArrayList<String>());
         }
+        start=0;
     }
 
     /*

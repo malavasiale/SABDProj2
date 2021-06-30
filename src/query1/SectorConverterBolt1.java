@@ -56,13 +56,13 @@ public class SectorConverterBolt1 extends BaseWindowedBolt {
                     String string_date = dateformat.format(date);
                     //Emit al Bolt successivo
                     long end = System.nanoTime();
-                    latency.setValue(new Long(end-start));
-                    start = 0;
+                    latency.setValue(new Long((end-start)));
                     collector.emit(new Values(t.getLong(0),t.getString(1),ship_type,t.getString(5),id,string_date));
                 }
             }
 
         }
+        start=0;
 
     }
     @Override
