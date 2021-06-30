@@ -34,7 +34,7 @@ public class RabbitMQExporterBolt3  extends BaseRichBolt {
     @Override
     public void prepare(@SuppressWarnings("rawtypes") Map map, TopologyContext topologyContext, OutputCollector outputCollector) {
         this.metric = new CountMetric();
-        topologyContext.registerMetric("Throughput",metric,30);
+        topologyContext.registerMetric("Throughput",metric,15);
         this.collector=outputCollector;
         this.rabbitmq = new RabbitMQManager(rabbitMqHost, rabbitMqUsername, rabbitMqPassword, defaultQueue);
 

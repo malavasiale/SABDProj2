@@ -23,7 +23,7 @@ public class Query2Topology {
             public long extractTimestamp(Tuple tuple) {
                 return tuple.getLong(0);
             }
-        }).withTumblingWindow((BaseWindowedBolt.Duration.minutes(30))),1)
+        }).withTumblingWindow((BaseWindowedBolt.Duration.minutes(15))),1)
                 .shuffleGrouping("source");
 
         builder.setBolt("count",new CountBolt2(),1)

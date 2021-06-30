@@ -1,5 +1,6 @@
 package query3;
 
+import org.apache.storm.metric.api.AssignableMetric;
 import org.apache.storm.shade.com.google.common.collect.Sets;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
@@ -16,6 +17,9 @@ import java.util.*;
 
 public class GlobalRank3 extends BaseRichBolt {
     private SimpleDateFormat format = new SimpleDateFormat("yy-MM-dd HH:mm");
+    private Integer num_of_partial = 3;
+    long start;
+    AssignableMetric latency;
     /*
     HASHMAP
         -key : timestamp (inizio finestra)
@@ -25,11 +29,17 @@ public class GlobalRank3 extends BaseRichBolt {
     OutputCollector collector;
     @Override
     public void prepare(Map map, TopologyContext topologyContext, OutputCollector outputCollector) {
+        latency = new AssignableMetric(new Long(0));
+        start= 0;
+        topologyContext.registerMetric("Latency-global",latency,10);
         this.collector = outputCollector;
     }
 
     @Override
     public void execute(Tuple tuple) {
+        if(start == 0){
+            start = System.nanoTime();
+        }
         ArrayList<Pair<String,Double>> array = (ArrayList<Pair<String,Double>>)tuple.getValue(0);
         Long timestamp = tuple.getLong(1);
         Date d = new Date(timestamp);
@@ -40,11 +50,14 @@ public class GlobalRank3 extends BaseRichBolt {
             sorted_lists.put(timestamp,current_pair);
         }else{
             Pair<ArrayList<Pair<String,Double>>,Integer> current_pair = sorted_lists.get(timestamp);
-            ArrayList<Pair<String,Double>> current_list = current_pair.getValue0();
+            Pair<ArrayList<Pair<String,Double>>,Integer> current_pair_modified = current_pair.setAt1(current_pair.getValue1()+1);
+            sorted_lists.put(timestamp,current_pair_modified);
+            ArrayList<Pair<String,Double>> current_list = current_pair_modified.getValue0();
+
             current_list.addAll(array);
             List<Pair<String,Double>> new_list = new ArrayList<>(Sets.newLinkedHashSet(current_list));
-            Integer num_list = current_pair.getValue1()+1;
-            if(num_list ==2){ //il valore è unguale al numero di repliche di partiali rank
+            Integer num_list = current_pair_modified.getValue1();
+            if(num_list.equals(num_of_partial)){ //il valore è unguale al numero di repliche di partiali rank
                 new_list.sort(new Comparator<Pair<String,Double>>() {
                     @Override
                     public int compare(Pair<String, Double> t0, Pair<String, Double> t1) {
@@ -59,6 +72,9 @@ public class GlobalRank3 extends BaseRichBolt {
                     }
                     row = row+","+new_list.get(i).getValue0()+","+new_list.get(i).getValue1().toString();
                 }
+                long end = System.nanoTime();
+                latency.setValue(new Long(end-start));
+                start = 0;
                 collector.emit(new Values(row));
                 sorted_lists.remove(timestamp);
             }

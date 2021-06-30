@@ -41,7 +41,7 @@ public class Query1Topology {
         conf.put(Config.TOPOLOGY_ENABLE_MESSAGE_TIMEOUTS,false);
         conf.put(Config.TOPOLOGY_DEBUG,false);
         conf.registerMetricsConsumer(MetricConsumer1.class,1);
-        conf.put(Config.TOPOLOGY_BUILTIN_METRICS_BUCKET_SIZE_SECS,30);
+        conf.put(Config.TOPOLOGY_BUILTIN_METRICS_BUCKET_SIZE_SECS,15);
         conf.setMaxTaskParallelism(3);
         LocalCluster cluster = new LocalCluster();
         cluster.submitTopology("query1", conf, builder.createTopology());

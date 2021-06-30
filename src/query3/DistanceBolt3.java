@@ -1,6 +1,7 @@
 package query3;
 
 
+import org.apache.storm.metric.api.AssignableMetric;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.OutputFieldsDeclarer;
@@ -29,6 +30,8 @@ public class DistanceBolt3 extends BaseWindowedBolt {
     private long timestamp_final;
     OutputCollector outputCollector;
     private Integer intervallo_num;
+    long start;
+    AssignableMetric latency;
     /*
     HashMap:
         -key : Trip_id
@@ -48,11 +51,17 @@ public class DistanceBolt3 extends BaseWindowedBolt {
 
     @Override
     public void prepare(Map map, TopologyContext topologyContext, OutputCollector outputCollector) {
+        latency = new AssignableMetric(new Long(0));
+        start= 0;
+        topologyContext.registerMetric("Latency-distance",latency,10);
         this.outputCollector = outputCollector;
     }
 
     @Override
     public void execute(TupleWindow tupleWindow) {
+        if(start == 0){
+            start = System.nanoTime();
+        }
 
         for( Tuple tuple : tupleWindow.get()){
             //Vengono presi tutti i dati necesari
@@ -82,6 +91,9 @@ public class DistanceBolt3 extends BaseWindowedBolt {
                     Double current_dist = active_trip.get(trip_id_current).getValue3();
                     Long current_trip_id_end = active_trip.get(trip_id_current).getValue4();
                     //Emissione verso il bolt successivo
+                    long end = System.nanoTime();
+                    latency.setValue(new Long(end-start));
+                    start = 0;
                     outputCollector.emit(new Values(windowTimestamp,trip_id_current,current_dist));
                     //Controllo se il viaggio è finito
                     if(current_trip_id_end<=timestamp_start){

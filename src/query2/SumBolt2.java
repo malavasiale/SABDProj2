@@ -1,5 +1,7 @@
 package query2;
 
+import org.apache.storm.metric.api.AssignableMetric;
+import org.apache.storm.metric.api.ICombiner;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.OutputFieldsDeclarer;
@@ -24,8 +26,9 @@ import java.util.concurrent.TimeUnit;
  * Classe che somma il numero di navi diverse passate in un settore e in una determinata fascia oraria
  */
 public class SumBolt2 extends BaseRichBolt {
-
+    AssignableMetric latency;
     OutputCollector collector;
+    long start;
     /*
     * HashMap con :
     * key = settore , timestamp iniziale, timestamp limite, Fascia, mare
@@ -54,11 +57,18 @@ public class SumBolt2 extends BaseRichBolt {
 
     @Override
     public void prepare(Map map, TopologyContext topologyContext, OutputCollector outputCollector) {
+        latency = new AssignableMetric(new Long(0));
+        start= 0;
+        topologyContext.registerMetric("Latency-sum",latency,10);
+
         this.collector = outputCollector;
     }
 
     @Override
     public void execute(Tuple tuple) {
+        if(start == 0){
+            start = System.nanoTime();
+        }
         String date = tuple.getString(0);
 
         String sector_id = tuple.getString(1);
@@ -89,6 +99,9 @@ public class SumBolt2 extends BaseRichBolt {
                 /*Calcolo ed emit tupla finale*/
                 if(days_counts.get(key).getValue1().equals(size_for_mode)){
                     //Emit quando sono arrivati tutti i dati settimanali o mensili
+                    long end = System.nanoTime();
+                    latency.setValue(new Long(end-start));
+                    start = 0;
                     collector.emit(new Values(key.getValue1(),fascia,sector_id,sea,days_counts.get(key).getValue0()));
                     days_counts.remove(key);
                 }
@@ -99,7 +112,6 @@ public class SumBolt2 extends BaseRichBolt {
         if(!found){
 
             Quintet<String,Long,Long,String,String> new_key = new Quintet<String,Long,Long,String,String>(sector_id,timestamp,timestamp+ millis_mode,fascia,sea);
-            //System.out.println("-------------AGGIUNTO NUOVA SETTIMANA CON KEY : "+date+"-------------------------"+new_key.toString());
             days_counts.put(new_key,new Pair<Integer,Integer>(count,1));
         }
 

@@ -1,5 +1,6 @@
 package query1;
 
+import org.apache.storm.metric.api.AssignableMetric;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.OutputFieldsDeclarer;
@@ -22,7 +23,7 @@ import java.util.concurrent.TimeUnit;
  * Classe che permette di sommare i dati di un determinato settore e per ogni tipologia di nave per ogni settimana o mese
  */
 public class SumBolt1 extends BaseRichBolt {
-
+    AssignableMetric latency ;
     OutputCollector collector;
     /*
     * HashMap con :
@@ -35,6 +36,7 @@ public class SumBolt1 extends BaseRichBolt {
     static final String[] ship_types ={"militare","passeggeri","cargo","other"};
     Integer size_for_mode;
     long millis_mode;
+    long start;
 
     Integer days_for_mode;
 
@@ -57,11 +59,17 @@ public class SumBolt1 extends BaseRichBolt {
 
     @Override
     public void prepare(Map map, TopologyContext topologyContext, OutputCollector outputCollector) {
+        latency = new AssignableMetric(new Long(0));
+        start= 0;
+        topologyContext.registerMetric("Latency-sum",latency,10);
         this.collector = outputCollector;
     }
 
     @Override
     public void execute(Tuple tuple) {
+        if(start == 0){
+            start = System.nanoTime();
+        }
         String date = tuple.getString(0);
         String sector_id = tuple.getString(1);
         String ship_type = tuple.getString(2);
@@ -99,6 +107,9 @@ public class SumBolt1 extends BaseRichBolt {
                         Double mean = (sum/ days_for_mode)*1.0;
                         row = row +","+ type + "," + mean;
                     }
+                    long end = System.nanoTime();
+                    latency.setValue(new Long(end-start));
+                    start = 0;
                     collector.emit(new Values(row));
                     days_counts.remove(key);
                 }

@@ -14,6 +14,7 @@
 /home/brielino/SABDProj2/src/query3/Query3Topology.java
 /home/brielino/SABDProj2/src/query1/SectorConverterBolt1.java
 /home/brielino/SABDProj2/src/query3/PartialRanckBolt3.java
+/home/brielino/SABDProj2/src/query2/CustomGrouping2.java
 /home/brielino/SABDProj2/src/utils/MetricConsumer3.java
 /home/brielino/SABDProj2/src/preProcessing/PreProcessingTopology.java
 /home/brielino/SABDProj2/src/query2/CountBolt2.java

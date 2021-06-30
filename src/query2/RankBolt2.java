@@ -1,5 +1,6 @@
 package query2;
 
+import org.apache.storm.metric.api.AssignableMetric;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.OutputFieldsDeclarer;
@@ -18,6 +19,8 @@ import java.util.*;
  * Classe che permette di ordinare i settori in base al numero di navi diverse presenti nelle varie ore
  */
 public class RankBolt2 extends BaseRichBolt {
+    long start;
+    AssignableMetric latency;
     private SimpleDateFormat format = new SimpleDateFormat("yy-MM-dd");
     /*
     HashMap :
@@ -29,11 +32,18 @@ public class RankBolt2 extends BaseRichBolt {
 
     @Override
     public void prepare(Map map, TopologyContext topologyContext, OutputCollector outputCollector) {
+
+        latency = new AssignableMetric(new Long(0));
+        start= 0;
+        topologyContext.registerMetric("Latency-rank",latency,10);
         this.collector = outputCollector;
     }
 
     @Override
     public void execute(Tuple tuple) {
+        if(start == 0){
+            start = System.nanoTime();
+        }
         long timestamp = tuple.getLong(0);
         String fascia = tuple.getString(1);
         String sector_id = tuple.getString(2);
@@ -99,6 +109,9 @@ public class RankBolt2 extends BaseRichBolt {
                     row = d+","+sea+","+other_fascia+","+collect.get(other_key).get(0).getValue0()+"--"+collect.get(other_key).get(1).getValue0()+ "--"+collect.get(other_key).get(2).getValue0()+","+
                             fascia+","+collect.get(current_key).get(0).getValue0()+"--"+collect.get(current_key).get(1).getValue0()+ "--"+collect.get(current_key).get(2).getValue0();
                 }
+                long end = System.nanoTime();
+                latency.setValue(new Long(end-start));
+                start = 0;
                 collector.emit(new Values(row));
                 collect.remove(current_key);
                 collect.remove(other_key);
@@ -150,6 +163,9 @@ public class RankBolt2 extends BaseRichBolt {
                     row = d+","+sea+","+other_fascia+","+collect.get(other_key).get(0).getValue0()+"--"+collect.get(other_key).get(1).getValue0()+ "--"+collect.get(other_key).get(2).getValue0()+","+
                             fascia+","+collect.get(current_key).get(0).getValue0()+"--"+collect.get(current_key).get(1).getValue0()+ "--"+collect.get(current_key).get(2).getValue0();
                 }
+                long end = System.nanoTime();
+                latency.setValue(new Long(end-start));
+                start = 0;
                 collector.emit(new Values(row));
                 collect.remove(current_key);
                 collect.remove(other_key);

@@ -18,11 +18,11 @@ public class MetricConsumer2 implements IMetricsConsumer{
     @Override
     public void prepare(Map map, Object o, TopologyContext topologyContext, IErrorReporter iErrorReporter) {
         try {
-            throughput = new FileWriter("/data/test/query2_throughput.txt");
-            sector = new FileWriter("/data/test/query2_sector.txt");
-            count = new FileWriter("/data/test/query2_count.txt");
-            sum = new FileWriter("/data/test/query2_sum.txt");
-            rank = new FileWriter("/data/test/query2_rank.txt");
+            throughput = new FileWriter("/data/test/query2_throughput.txt",true);
+            sector = new FileWriter("/data/test/query2_sector.txt",true);
+            count = new FileWriter("/data/test/query2_count.txt",true);
+            sum = new FileWriter("/data/test/query2_sum.txt",true);
+            rank = new FileWriter("/data/test/query2_rank.txt",true);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -38,34 +38,32 @@ public class MetricConsumer2 implements IMetricsConsumer{
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            }else if(p.name.equals("__execute-latency")){
-                if(p.value.toString().equals("{}")){
-                    continue;
+            }else if(p.name.equals("Latency-sector")){
+                try {
+                    sector.write(p.value.toString()+"\n");
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-                String line =p.value.toString();
-                line = line.replaceAll("\\{|\\}","");
-                System.out.println(line+"\n");
-                String[] line_split = line.split(":");
-                String name = line_split[0];
-                String[] value_split = line_split[1].split("=");
-                String value = value_split[1];
-                try{
-                    if(name.equals("sum")){
-                        sum.write(value+"\n");
-                    }else if(name.equals("count")){
-                        count.write(value+"\n");
-                    }else if(name.equals("sector")){
-                        sector.write(value+"\n");
-                    }else if(name.equals("rank")) {
-                        rank.write(value + "\n");
-                    }
-                }catch (IOException e){
+            }else if(p.name.equals("Latency-sum")){
+                try {
+                    sum.write(p.value.toString()+"\n");
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
 
+            }else if(p.name.equals("Latency-count")){
+                try {
+                    count.write(p.value.toString()+"\n");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }else if(p.name.equals("Latency-rank")){
+                try {
+                    rank.write(p.value.toString()+"\n");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
-
-            //System.out.println(p.name+"  "+p.value.toString()+"\n");
         }
         try {
             sum.flush();

@@ -1,5 +1,6 @@
 package query3;
 
+import org.apache.storm.metric.api.AssignableMetric;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.OutputFieldsDeclarer;
@@ -16,7 +17,8 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class PartialRanckBolt3 extends BaseRichBolt {
-    String aa = "timestamp trip_id distance";
+    long start;
+    AssignableMetric latency;
     private SimpleDateFormat format = new SimpleDateFormat("yy-MM-dd HH:mm");
     Long timestamp_start;
     List<Pair<String,Double>> array_window;
@@ -39,10 +41,16 @@ public class PartialRanckBolt3 extends BaseRichBolt {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+        latency = new AssignableMetric(new Long(0));
+        start= 0;
+        topologyContext.registerMetric("Latency-partial",latency,10);
     }
 
     @Override
     public void execute(Tuple tuple) {
+        if(start == 0){
+            start = System.nanoTime();
+        }
         String trip_id = tuple.getString(1);
         Long windowStart = tuple.getLong(0);
         Double distance = tuple.getDouble(2);
@@ -58,6 +66,9 @@ public class PartialRanckBolt3 extends BaseRichBolt {
                     }
                 });
             }
+            long end = System.nanoTime();
+            latency.setValue(new Long(end-start));
+            start = 0;
             outputCollector.emit(new Values(array_window,timestamp_start));
             //Aggiornamento unova finestra temporale
             timestamp_start = timestamp_start +TimeUnit.HOURS.toMillis(intervallo_num);

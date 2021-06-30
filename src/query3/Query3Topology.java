@@ -29,7 +29,7 @@ public class Query3Topology {
         }).withTumblingWindow((BaseWindowedBolt.Duration.minutes(30))),1)
                 .shuffleGrouping("source");
 
-        builder.setBolt("partial",new PartialRanckBolt3(args[0]),2)
+        builder.setBolt("partial",new PartialRanckBolt3(args[0]),3)
                 .fieldsGrouping("distance",new Fields("trip_id"));
 
         builder.setBolt("global",new GlobalRank3(),1)
@@ -47,7 +47,7 @@ public class Query3Topology {
         conf.put(Config.TOPOLOGY_ENABLE_MESSAGE_TIMEOUTS,false);
         conf.put(Config.TOPOLOGY_DEBUG,false);
         conf.registerMetricsConsumer(MetricConsumer3.class,1);
-        conf.put(Config.TOPOLOGY_BUILTIN_METRICS_BUCKET_SIZE_SECS,30);
+        conf.put(Config.TOPOLOGY_BUILTIN_METRICS_BUCKET_SIZE_SECS,15);
         conf.setMaxTaskParallelism(3);
         LocalCluster cluster = new LocalCluster();
         cluster.submitTopology("query3", conf, builder.createTopology());

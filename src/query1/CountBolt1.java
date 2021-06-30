@@ -1,5 +1,6 @@
 package query1;
 
+import org.apache.storm.metric.api.AssignableMetric;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.OutputFieldsDeclarer;
@@ -22,7 +23,6 @@ public class CountBolt1 extends BaseRichBolt {
     static final String[] ship_types ={"militare","passeggeri","cargo","other"};
     boolean first;
     OutputCollector collector;
-
     /*
     * HashMap che ha
     * key = ship_type , settore
@@ -35,6 +35,8 @@ public class CountBolt1 extends BaseRichBolt {
     Value = List<Ship-id>
      */
     Map<String, ArrayList<String>> presents = new HashMap<String, ArrayList<String>>();
+    long start;
+    AssignableMetric latency;
 
     @Override
     public void prepare(Map map, TopologyContext topologyContext, OutputCollector outputCollector) {
@@ -42,6 +44,9 @@ public class CountBolt1 extends BaseRichBolt {
         Popoliamo l'HashMap dei settori
          */
         first = true;
+        latency = new AssignableMetric(new Long(0));
+        start= 0;
+        topologyContext.registerMetric("Latency-count",latency,10);
 
 
         this.collector = outputCollector;
@@ -49,6 +54,9 @@ public class CountBolt1 extends BaseRichBolt {
 
     @Override
     public void execute(Tuple tuple) {
+        if(start == 0){
+            start = System.nanoTime();
+        }
         //Vengono presi tutti i dati utili per contare il numero di navi in un settore per un determinato tipo
         String sector_id = tuple.getString(4);
         String ship_type = tuple.getString(2);
@@ -110,7 +118,9 @@ public class CountBolt1 extends BaseRichBolt {
                     collector.emit(new Values(date_to_add,cell,type_n,"0"));
                 }
             }**/
-
+            long end = System.nanoTime();
+            latency.setValue(new Long(end-start));
+            start = 0;
             collector.emit(new Values(old_data,cell,type_n,num_n));
             counts.put(current_key,new Quartet<String,String,String,Integer>(date_splitted[0],
                     date_splitted[1],date_splitted[2],0));

@@ -35,6 +35,7 @@ query3/PartialRanckBolt3.class
 preProcessing/ModifyCSVBolt.class
 query2/RankBolt2$4.class
 query2/RankBolt2.class
+query2/CustomGrouping2.class
 utils/SorterCSV.class
 query3/GlobalRank3.class
 query1/Query1Topology$1.class

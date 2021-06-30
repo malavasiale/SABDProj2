@@ -1,5 +1,6 @@
 package query2;
 
+import org.apache.storm.metric.api.AssignableMetric;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.OutputFieldsDeclarer;
@@ -34,6 +35,8 @@ public class CountBolt2  extends BaseRichBolt {
     Value = List<Ship-id>
      */
     Map<Pair<String,String>, ArrayList<String>> presents = new HashMap<Pair<String,String>, ArrayList<String>>();
+    long start;
+    AssignableMetric latency;
 
     @Override
     public void prepare(Map map, TopologyContext topologyContext, OutputCollector outputCollector) {
@@ -66,6 +69,9 @@ public class CountBolt2  extends BaseRichBolt {
 
             }
         }
+        latency = new AssignableMetric(new Long(0));
+        start= 0;
+        topologyContext.registerMetric("Latency-count",latency,10);
 
 
         this.collector = outputCollector;
@@ -73,11 +79,13 @@ public class CountBolt2  extends BaseRichBolt {
 
     @Override
     public void execute(Tuple tuple) {
+        if(start == 0){
+            start = System.nanoTime();
+        }
         String sector_id = tuple.getString(4);
         String fascia = tuple.getString(2);
         String ship_id =  tuple.getString(1);
         String date = tuple.getString(3);
-        String sea = tuple.getString(5);
         Pair<String,String> key = new Pair<String,String>(sector_id,fascia);
         String[] date_splitted = date.substring(0,8).split("-");
         //Controllo se è cambiato il giorno
@@ -128,6 +136,9 @@ public class CountBolt2  extends BaseRichBolt {
                 }
             }
             //Emit dei dati quando cambia il giorno
+            long end = System.nanoTime();
+            latency.setValue(new Long(end-start));
+            start = 0;
             collector.emit(new Values(old_data,cell,fascia,sea,num_n));
             counts.put(current_key,new Quintet<String,String,String,String,Integer>(sea,date_splitted[0],
                     date_splitted[1],date_splitted[2],0));
