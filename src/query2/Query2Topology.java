@@ -23,13 +23,13 @@ public class Query2Topology {
             public long extractTimestamp(Tuple tuple) {
                 return tuple.getLong(0);
             }
-        }).withTumblingWindow((BaseWindowedBolt.Duration.minutes(15))),1)
+        }).withTumblingWindow((BaseWindowedBolt.Duration.minutes(30))),1)
                 .shuffleGrouping("source");
 
         builder.setBolt("count",new CountBolt2(),1)
                 .shuffleGrouping("sector");
 
-        builder.setBolt("sum",new SumBolt2(args[0]),3)
+        builder.setBolt("sum",new SumBolt2(args[0]),1)
                 .fieldsGrouping("count",new Fields("sector_id"));
         builder.setBolt("rank", new RankBolt2(),2)
                 .fieldsGrouping("sum", new Fields("sea"));

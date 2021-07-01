@@ -27,7 +27,7 @@ public class Query1Topology {
         builder.setBolt("count",new CountBolt1(),2)
                 .fieldsGrouping("sector",new Fields("day"));
 
-        builder.setBolt("sum",new SumBolt1(args[0]),1)
+        builder.setBolt("sum",new SumBolt1(args[0]),3)
                 .fieldsGrouping("count", new Fields("sector_id"));
 
         builder.setBolt("exporter",
