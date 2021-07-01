@@ -1,0 +1,19 @@
+ts,sea,slot_a,rank_a,slot_b,rank_b
+Sun Mar 15 00:00:00 GMT 2015,orientale,prima,C20--D20--B18,seconda,B18--G33--E21
+Sun Mar 15 00:00:00 GMT 2015,occidentale,prima,D1--F14--I2,seconda,D1--C1--D13
+Sun Mar 22 00:00:00 GMT 2015,occidentale,prima,D1--F14--I2,seconda,D1--D13--B15
+Sun Mar 22 00:00:00 GMT 2015,orientale,prima,C20--D20--D19,seconda,C20--D19--C19
+Sun Mar 29 00:00:00 GMT 2015,occidentale,prima,D1--F15--D17,seconda,D1--D2--D14
+Sun Mar 29 00:00:00 GMT 2015,orientale,prima,C20--C31--C30,seconda,C20--A29--D20
+Sun Apr 05 00:00:00 GMT 2015,occidentale,prima,D1--D2--F9,seconda,D1--D2--F12
+Sun Apr 05 00:00:00 GMT 2015,orientale,prima,C20--D20--B20,seconda,C20--D20--D18
+Sun Apr 12 00:00:00 GMT 2015,occidentale,prima,F9--D1--F8,seconda,F9--D1--F8
+Sun Apr 12 00:00:00 GMT 2015,orientale,prima,C20--D20--C19,seconda,C20--D20--B18
+Sun Apr 19 00:00:00 GMT 2015,occidentale,prima,F9--D1--D2,seconda,F9--D1--H8
+Sun Apr 19 00:00:00 GMT 2015,orientale,prima,C20--D20--G33,seconda,C20--D20--G33
+Sun Apr 26 00:00:00 GMT 2015,orientale,prima,C20--G33--D20,seconda,C20--D20--G33
+Sun Apr 26 00:00:00 GMT 2015,occidentale,prima,F9--J14--F8,seconda,F9--J14--H8
+Sun May 03 00:00:00 GMT 2015,occidentale,prima,F9--F8--H8,seconda,H8--F8--G8
+Sun May 03 00:00:00 GMT 2015,orientale,prima,C20--D20--G33,seconda,C20--D20--G33
+Sun May 10 00:00:00 GMT 2015,orientale,prima,G33--C20--D20,seconda,C20--G33--D20
+Sun May 10 00:00:00 GMT 2015,occidentale,prima,F9--F8--G8,seconda,F8--H8--F9
