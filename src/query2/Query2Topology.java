@@ -11,9 +11,7 @@ import utils.MetricConsumer1;
 import utils.MetricConsumer2;
 
 public class Query2Topology {
-
     public static void main(String[] args){
-
         TopologyBuilder builder = new TopologyBuilder();
 
         builder.setSpout("source",new ReaderCSVSpout2(),1);
@@ -36,7 +34,7 @@ public class Query2Topology {
 
         builder.setBolt("exporter",
                 new RabbitMQExporterBolt2(
-                        "rabbitmq","rabbitmq" ,
+                        "localhost","rabbitmq" ,
                         "rabbitmq", "query2"),
                 3)
                 .shuffleGrouping("rank");

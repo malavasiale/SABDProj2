@@ -1,8 +1,15 @@
 package utils;
 
 import com.rabbitmq.client.*;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.*;
+import query1.Query1Topology;
+import query2.Query2Topology;
+import query3.Query3Topology;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.URI;
 import java.util.concurrent.TimeoutException;
 
 // RabbitMQ manager
@@ -14,8 +21,48 @@ public class RabbitMQManager {
     private String password;
     private ConnectionFactory factory;
     private Connection connection;
-
+    public static PrintWriter writer;
     private String defaultQueue;
+
+    public RabbitMQManager(String host,String username, String password, String queue,Boolean consumer){
+        super();
+        this.host = host;
+        this.username = username;
+        this.password = password;
+
+        this.factory = null;
+        this.connection = null;
+        this.defaultQueue = queue;
+
+        this.initialize();
+        this.initializeQueue(defaultQueue);
+        Configuration conf = new Configuration();
+        conf.addResource(new Path("/data/Hadoop/core-site.xml"));
+        conf.addResource(new Path("/data/Hadoop/hdfs-site.xml"));
+        conf.set("fs.hdfs.impl",
+                org.apache.hadoop.hdfs.DistributedFileSystem.class.getName()
+        );
+
+        FileSystem fs = null;
+        FSDataOutputStream outputStream;
+
+        try {
+            if(RabbitMQConsumer.filename.equals("Query1.csv")){
+                fs = FileSystem.get(URI.create("hdfs://localhost:9000/results/"+RabbitMQConsumer.filename),conf);
+                outputStream = fs.create(new Path("/results/"+RabbitMQConsumer.filename));
+            }else if(RabbitMQConsumer.filename.equals("Query2.csv")){
+                fs = FileSystem.get(URI.create("hdfs://localhost:9000/results/"+RabbitMQConsumer.filename),conf);
+                outputStream = fs.create(new Path("/results/"+RabbitMQConsumer.filename));
+            }else{
+                fs = FileSystem.get(URI.create("hdfs://localhost:9000/results/"+RabbitMQConsumer.filename),conf);
+                outputStream = fs.create(new Path("/results/"+RabbitMQConsumer.filename));
+            }
+            writer = new PrintWriter(outputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
 
     public RabbitMQManager(String host, String username, String password, String queue) {
         super();
@@ -132,6 +179,8 @@ public class RabbitMQManager {
 
     public boolean createDetachedReader(String queue) {
 
+
+
         try {
 
             reopenConnectionIfNeeded();
@@ -141,9 +190,13 @@ public class RabbitMQManager {
             Consumer consumer = new DefaultConsumer(channel) {
                 @Override
                 public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties,
-                                           byte[] body) throws IOException {
+                                           byte[] body)
+                        throws IOException {
                     String message = new String(body, "UTF-8");
                     System.out.println(message);
+                    writer.append(message+"\n");
+                    writer.flush();
+
                 }
             };
             channel.basicConsume(queue, true, consumer);

@@ -39,5 +39,4 @@ query2/CustomGrouping2.class
 utils/SorterCSV.class
 query3/GlobalRank3.class
 query1/Query1Topology$1.class
-utils/HdfsRead.class
 utils/CalculateDistance.class

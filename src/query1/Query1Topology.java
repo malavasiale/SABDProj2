@@ -12,9 +12,7 @@ import utils.MetricConsumer1;
 public class Query1Topology {
 
     public static void main(String[] args){
-
         TopologyBuilder builder = new TopologyBuilder();
-
 
 
         builder.setSpout("source",new ReaderCSVSpout1(),1);
@@ -35,7 +33,7 @@ public class Query1Topology {
 
         builder.setBolt("exporter",
                 new RabbitMQExporterBolt1(
-                        "rabbitmq","rabbitmq" ,
+                        "localhost","rabbitmq" ,
                         "rabbitmq", "query1"),
                 3)
                 .shuffleGrouping("sum");

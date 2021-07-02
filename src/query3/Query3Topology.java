@@ -16,6 +16,7 @@ import java.text.ParseException;
 public class Query3Topology {
 
     public static void main(String[] args) throws ParseException {
+
         TopologyBuilder builder = new TopologyBuilder();
 
         builder.setSpout("source",new ReaderCSVSpout3(),1);
@@ -38,7 +39,7 @@ public class Query3Topology {
 
         builder.setBolt("exporter",
                 new RabbitMQExporterBolt3(
-                        "rabbitmq","rabbitmq" ,
+                        "localhost","rabbitmq" ,
                         "rabbitmq", "query3"),
                 3)
                 .shuffleGrouping("global");

@@ -5,7 +5,6 @@
 /home/brielino/SABDProj2/src/utils/CalculateDistance.java
 /home/brielino/SABDProj2/src/query2/SectorConverterBolt2.java
 /home/brielino/SABDProj2/src/utils/MetricConsumer1.java
-/home/brielino/SABDProj2/src/utils/HdfsRead.java
 /home/brielino/SABDProj2/src/utils/SorterCSV.java
 /home/brielino/SABDProj2/src/query3/DistanceBolt3.java
 /home/brielino/SABDProj2/src/query3/GlobalRank3.java

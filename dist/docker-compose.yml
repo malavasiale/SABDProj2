@@ -8,13 +8,11 @@ services:
         depends_on:
             - rabbitmq
             - zookeeper
-        links:
-            - zookeeper
-            - rabbitmq
         restart: always
         ports:
             - "6627:6627"
             - "8000:8000"
+        network_mode: "host"
 
     storm-cli:
         image: effeerre/storm-cli
@@ -23,15 +21,12 @@ services:
             - zookeeper
             - rabbitmq
             - storm-nimbus
-        links:
-            - zookeeper
-            - rabbitmq
-            - storm-nimbus
         entrypoint: /bin/bash
         stdin_open: true
         tty: true
         volumes: 
             - ./data:/data
+        network_mode: "host"
   
     zookeeper:
         image: zookeeper
@@ -39,6 +34,7 @@ services:
         restart: always
         ports:
              - "2181:2181"
+        network_mode: "host"
     
     storm-ui: 
         image: storm
@@ -47,55 +43,11 @@ services:
         depends_on: 
             - storm-nimbus
             - zookeeper
-        links: 
-            - storm-nimbus
-            - zookeeper
         restart: always
         ports:
             - "8080:8080"
+        network_mode: "host"
 
-    worker1:
-        image: storm
-        command: storm supervisor
-        container_name: worker1
-        depends_on:
-            - rabbitmq
-            - storm-nimbus
-            - zookeeper
-        links:
-            - storm-nimbus
-            - rabbitmq
-            - zookeeper
-        restart: always
-
-    worker2:
-        image: storm
-        command: storm supervisor
-        container_name: worker2
-        depends_on:
-            - storm-nimbus
-            - rabbitmq
-            - zookeeper
-        links:
-            - rabbitmq
-            - storm-nimbus
-            - zookeeper
-        restart: always
-
-
-    worker3:
-        image: storm
-        command: storm supervisor
-        container_name: worker3
-        depends_on:
-            - storm-nimbus
-            - rabbitmq
-            - zookeeper
-        links:
-            - storm-nimbus
-            - rabbitmq
-            - zookeeper
-        restart: always
 
     rabbitmq:
         image: rabbitmq:3-management 
@@ -107,3 +59,4 @@ services:
         ports:
             - "15672:15672"
             - "5672:5672"
+        network_mode: "host"
