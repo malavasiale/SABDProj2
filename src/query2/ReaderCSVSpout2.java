@@ -1,7 +1,6 @@
 package query2;
 
 
-import com.opencsv.CSVReader;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataInputStream;
@@ -15,7 +14,6 @@ import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Values;
 
 
-import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -26,8 +24,6 @@ import java.util.Map;
  * Metodo per la lettura del file CSV con nella query1 & query2
  */
 public class ReaderCSVSpout2 extends BaseRichSpout {
-    private FileReader filereader;
-    private CSVReader csvReader;
     private SpoutOutputCollector _collector;
     private SimpleDateFormat format = new SimpleDateFormat("yy-MM-dd HH:mm");
     private Date date_start;

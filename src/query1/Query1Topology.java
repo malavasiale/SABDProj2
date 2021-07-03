@@ -25,8 +25,8 @@ public class Query1Topology {
         }).withTumblingWindow((BaseWindowedBolt.Duration.minutes(30))),1)
                 .shuffleGrouping("source");
 
-        builder.setBolt("count",new CountBolt1(),2)
-                .fieldsGrouping("sector",new Fields("day"));
+        builder.setBolt("count",new CountBolt1(),1)
+                .shuffleGrouping("sector");
 
         builder.setBolt("sum",new SumBolt1(args[0]),3)
                 .fieldsGrouping("count", new Fields("sector_id"));

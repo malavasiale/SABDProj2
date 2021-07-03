@@ -1,8 +1,13 @@
 package utils;
 
-import com.opencsv.*;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FSDataInputStream;
+import org.apache.hadoop.fs.FSDataOutputStream;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
 
 import java.io.*;
+import java.net.URI;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -13,10 +18,10 @@ import java.util.List;
 public class SorterCSV {
 
     public static void main(String[] args) throws IOException, ParseException {
-        FileReader filereader;
-        CSVReader csvReader=null;
-        List<String[]> to_sort = new ArrayList<String[]>();
 
+        List<String[]> to_sort = new ArrayList<String[]>();
+        FSDataInputStream inputStream = null;
+        /**
         try {
             CSVParser parser = new CSVParserBuilder().withSeparator(',').build();
             filereader = new FileReader("../prj2_dataset.csv");
@@ -27,6 +32,27 @@ public class SorterCSV {
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+        }**/
+        Configuration conf = new Configuration();
+        conf.addResource(new Path("/data/Hadoop/core-site.xml"));
+        conf.addResource(new Path("/data/Hadoop/hdfs-site.xml"));
+        conf.set("fs.hdfs.impl",
+                org.apache.hadoop.hdfs.DistributedFileSystem.class.getName()
+        );
+        conf.set("fs.file.impl",
+                org.apache.hadoop.fs.LocalFileSystem.class.getName()
+        );
+        FileSystem fs;
+        FileSystem fs1 = null;
+        FSDataOutputStream outputStream = null;
+        PrintWriter writer;
+        try {
+            fs = FileSystem.get(URI.create("hdfs://localhost:9000/input/prj2_dataset.csv"),conf);
+            inputStream = fs.open(new Path("/input/prj2_dataset.csv"));
+            fs1 = FileSystem.get(URI.create("hdfs://localhost:9000/input/dataset_sorted.csv"),conf);
+            outputStream = fs1.create(new Path("/input/dataset_sorted.csv"));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         SimpleDateFormat input_format1=new SimpleDateFormat("dd-MM-yy HH:mm");
         SimpleDateFormat input_format2=new SimpleDateFormat("dd/MM/yy HH:mm");
@@ -34,8 +60,11 @@ public class SorterCSV {
         SimpleDateFormat format2 = new SimpleDateFormat("yy-MM-dd HH:mm");
         Date date;
 
+        String line;
         String[] row;
-        while((row = csvReader.readNext()) != null){
+        inputStream.readLine();
+        while((line = inputStream.readLine()) != null){
+            row = line.split(",");
             if(row[4].contains("-")){
                 date = input_format1.parse(row[4]);
             }else{
@@ -44,16 +73,16 @@ public class SorterCSV {
             row[4] = format2.format(date);
             to_sort.add(row);
         }
-
+        writer = new PrintWriter(outputStream);
         to_sort.sort(new Comparator<String[]>() {
             @Override
             public int compare(String[] l1, String[] l2) {
                 return l1[4].compareTo(l2[4]);
             }
         });
-
-        CSVWriter writer = new CSVWriter(new FileWriter("../dataset_sorted.csv",true),CSVWriter.DEFAULT_SEPARATOR,CSVWriter.NO_QUOTE_CHARACTER);
-        writer.writeAll(to_sort);
+        for(int i=0; i< to_sort.size();i++){
+            writer.append(to_sort.get(i)[0]+","+to_sort.get(i)[1]+","+to_sort.get(i)[2]+","+to_sort.get(i)[3]+","+to_sort.get(i)[4]+","+to_sort.get(i)[5]+"\n");
+        }
         writer.close();
     }
 
