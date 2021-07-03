@@ -24,7 +24,7 @@ public class RabbitMQManager {
     public static PrintWriter writer;
     private String defaultQueue;
 
-    public RabbitMQManager(String host,String username, String password, String queue,Boolean consumer){
+    public RabbitMQManager(String host,String username, String password, String queue,String path){
         super();
         this.host = host;
         this.username = username;
@@ -48,14 +48,14 @@ public class RabbitMQManager {
 
         try {
             if(RabbitMQConsumer.filename.equals("Query1.csv")){
-                fs = FileSystem.get(URI.create("hdfs://localhost:9000/results/"+RabbitMQConsumer.filename),conf);
-                outputStream = fs.create(new Path("/results/"+RabbitMQConsumer.filename));
+                fs = FileSystem.get(URI.create("hdfs://localhost:9000/results/"+path),conf);
+                outputStream = fs.create(new Path("/results/"+path));
             }else if(RabbitMQConsumer.filename.equals("Query2.csv")){
-                fs = FileSystem.get(URI.create("hdfs://localhost:9000/results/"+RabbitMQConsumer.filename),conf);
-                outputStream = fs.create(new Path("/results/"+RabbitMQConsumer.filename));
+                fs = FileSystem.get(URI.create("hdfs://localhost:9000/results/"+path),conf);
+                outputStream = fs.create(new Path("/results/"+path));
             }else{
-                fs = FileSystem.get(URI.create("hdfs://localhost:9000/results/"+RabbitMQConsumer.filename),conf);
-                outputStream = fs.create(new Path("/results/"+RabbitMQConsumer.filename));
+                fs = FileSystem.get(URI.create("hdfs://localhost:9000/results/"+path),conf);
+                outputStream = fs.create(new Path("/results/"+path));
             }
             writer = new PrintWriter(outputStream);
         } catch (IOException e) {

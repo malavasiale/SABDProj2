@@ -28,7 +28,7 @@ public class RabbitMQConsumer {
             System.out.println("ts,trip_1,rating_1,trip_2,rating_2,trip_3,rating_3,trip_4,rating_4,trip_5,rating_5");
         }
 
-        RabbitMQManager rmq = new RabbitMQManager(rabbitMQ, rabbitMQUsername, rabbitMQPassword, rabbitMQQueue,true);
+        RabbitMQManager rmq = new RabbitMQManager(rabbitMQ, rabbitMQUsername, rabbitMQPassword, rabbitMQQueue,args[1]);
 
         rmq.createDetachedReader(rabbitMQQueue);	//RabbitMQ reader
         while(true){
