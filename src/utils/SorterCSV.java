@@ -42,6 +42,7 @@ public class SorterCSV {
         conf.set("fs.file.impl",
                 org.apache.hadoop.fs.LocalFileSystem.class.getName()
         );
+        conf.set("dfs.replication", "1");
         FileSystem fs;
         FileSystem fs1 = null;
         FSDataOutputStream outputStream = null;

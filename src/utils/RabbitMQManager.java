@@ -42,6 +42,7 @@ public class RabbitMQManager {
         conf.set("fs.hdfs.impl",
                 org.apache.hadoop.hdfs.DistributedFileSystem.class.getName()
         );
+        conf.set("dfs.replication", "1");
 
         FileSystem fs = null;
         FSDataOutputStream outputStream;

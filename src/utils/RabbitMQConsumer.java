@@ -15,7 +15,7 @@ public class RabbitMQConsumer {
         String rabbitMQUsername = "rabbitmq";
         String rabbitMQPassword = "rabbitmq";
         String rabbitMQQueue = args[0];
-        //TODO aggiungere nome file tramite args[1] e passarlo al costruttore al posto di truegi
+
 
         if(rabbitMQQueue.equals("query1")){
             filename="Query1.csv";
