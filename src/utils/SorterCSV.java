@@ -21,18 +21,8 @@ public class SorterCSV {
 
         List<String[]> to_sort = new ArrayList<String[]>();
         FSDataInputStream inputStream = null;
-        /**
-        try {
-            CSVParser parser = new CSVParserBuilder().withSeparator(',').build();
-            filereader = new FileReader("../prj2_dataset.csv");
-            csvReader = new CSVReaderBuilder(filereader)
-                    .withCSVParser(parser)
-                    .withSkipLines(1)
-                    .build();
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }**/
+        
+        // Inizializzo parametri di configurazione per la scrittura diretta su HDFS
         Configuration conf = new Configuration();
         conf.addResource(new Path("/data/Hadoop/core-site.xml"));
         conf.addResource(new Path("/data/Hadoop/hdfs-site.xml"));
@@ -61,11 +51,14 @@ public class SorterCSV {
         SimpleDateFormat format2 = new SimpleDateFormat("yy-MM-dd HH:mm");
         Date date;
 
+        // Leggo tutti i dati dal file e li inserisco in una lista
         String line;
         String[] row;
         inputStream.readLine();
         while((line = inputStream.readLine()) != null){
             row = line.split(",");
+            
+            // Modifica data dal formato dd-MM-yy HH:mm  in   yy-MM-dd HH:mm
             if(row[4].contains("-")){
                 date = input_format1.parse(row[4]);
             }else{
@@ -75,12 +68,16 @@ public class SorterCSV {
             to_sort.add(row);
         }
         writer = new PrintWriter(outputStream);
+        
+        // Ordinamento lessicografico sul campo contenente la data
         to_sort.sort(new Comparator<String[]>() {
             @Override
             public int compare(String[] l1, String[] l2) {
                 return l1[4].compareTo(l2[4]);
             }
         });
+        
+        // Scrittura in append su un file nell' HDFS
         for(int i=0; i< to_sort.size();i++){
             writer.append(to_sort.get(i)[0]+","+to_sort.get(i)[1]+","+to_sort.get(i)[2]+","+to_sort.get(i)[3]+","+to_sort.get(i)[4]+","+to_sort.get(i)[5]+"\n");
         }
