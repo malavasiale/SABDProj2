@@ -13,10 +13,15 @@ public class Query1Topology {
 
     public static void main(String[] args){
         TopologyBuilder builder = new TopologyBuilder();
-
-
+        
+        /*
+        * Costruisco la topologia per la query1
+        */
         builder.setSpout("source",new ReaderCSVSpout1(),1);
 
+        /*
+        * Tramite TumblingWindow raggurppo i dati ogni 30 minuti
+        */
         builder.setBolt("sector",new SectorConverterBolt1().withTimestampExtractor(new TimestampExtractor() {
             @Override
             public long extractTimestamp(Tuple tuple) {
@@ -41,9 +46,14 @@ public class Query1Topology {
         Config conf = new Config();
         conf.put(Config.TOPOLOGY_ENABLE_MESSAGE_TIMEOUTS,false);
         conf.put(Config.TOPOLOGY_DEBUG,false);
+        
+        /*
+        * Configuro il bolt per consumare le metriche e ogni quanto tempo viene eseguito
+        */
         conf.registerMetricsConsumer(MetricConsumer1.class,1);
         conf.put(Config.TOPOLOGY_BUILTIN_METRICS_BUCKET_SIZE_SECS,15);
         conf.setMaxTaskParallelism(3);
+        
         LocalCluster cluster = new LocalCluster();
         cluster.submitTopology("query1", conf, builder.createTopology());
     }
