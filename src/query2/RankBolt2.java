@@ -32,7 +32,8 @@ public class RankBolt2 extends BaseRichBolt {
 
     @Override
     public void prepare(Map map, TopologyContext topologyContext, OutputCollector outputCollector) {
-
+        
+        //Inizializzo metrica latenza personalizzata
         latency = new AssignableMetric(new Long(0));
         start= 0;
         topologyContext.registerMetric("Latency-rank",latency,10);
@@ -76,8 +77,7 @@ public class RankBolt2 extends BaseRichBolt {
                         if (t0.getValue1() > t1.getValue1()) {
                             return -1;
                         } else if (t0.getValue1()==t1.getValue1()) {
-                            return 0; // You can change this to make it then look at the
-                            //words alphabetical order
+                            return 0;
                         } else {
                             return 1;
                         }
@@ -90,8 +90,7 @@ public class RankBolt2 extends BaseRichBolt {
                         if (t0.getValue1() > t1.getValue1()) {
                             return -1;
                         } else if (t0.getValue1()==t1.getValue1()) {
-                            return 0; // You can change this to make it then look at the
-                            //words alphabetical order
+                            return 0;
                         } else {
                             return 1;
                         }
@@ -116,7 +115,7 @@ public class RankBolt2 extends BaseRichBolt {
                 collect.remove(current_key);
                 collect.remove(other_key);
             }
-        }else{
+        }else{ // Uguale al codice dell if ma per il mare orientale
             String other_fascia = "";
             if(fascia.equals("prima")){
                 other_fascia = "seconda";
@@ -131,8 +130,7 @@ public class RankBolt2 extends BaseRichBolt {
                         if (t0.getValue1() > t1.getValue1()) {
                             return -1;
                         } else if (t0.getValue1()==t1.getValue1()) {
-                            return 0; // You can change this to make it then look at the
-                            //words alphabetical order
+                            return 0;
                         } else {
                             return 1;
                         }
@@ -145,8 +143,7 @@ public class RankBolt2 extends BaseRichBolt {
                         if (t0.getValue1() > t1.getValue1()) {
                             return -1;
                         } else if (t0.getValue1()==t1.getValue1()) {
-                            return 0; // You can change this to make it then look at the
-                            //words alphabetical order
+                            return 0; 
                         } else {
                             return 1;
                         }
