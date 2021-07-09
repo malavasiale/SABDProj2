@@ -27,6 +27,8 @@ public class SectorConverterBolt2 extends BaseWindowedBolt {
                         TopologyContext context,
                         OutputCollector collector) {
         this.collector = collector;
+        
+        //Inizializzo metrica latenza personalizzata
         latency = new AssignableMetric(new Long(0));
         start= 0;
         context.registerMetric("Latency-sector",latency,10);
