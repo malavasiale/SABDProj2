@@ -59,6 +59,7 @@ public class SumBolt1 extends BaseRichBolt {
 
     @Override
     public void prepare(Map map, TopologyContext topologyContext, OutputCollector outputCollector) {
+        // Inizializzo metrica latenza personalizzata
         latency = new AssignableMetric(new Long(0));
         start= 0;
         topologyContext.registerMetric("Latency-sum",latency,10);
