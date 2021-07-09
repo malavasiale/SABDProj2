@@ -69,6 +69,8 @@ public class CountBolt2  extends BaseRichBolt {
 
             }
         }
+        
+        // Inizializzo metrica latenza personalizzata
         latency = new AssignableMetric(new Long(0));
         start= 0;
         topologyContext.registerMetric("Latency-count",latency,10);
@@ -165,6 +167,9 @@ public class CountBolt2  extends BaseRichBolt {
         return difference_days;
     }
 
+    /*
+    *  Metodo per trovare i giorni mancanti
+    */
     public String emit_missing_days(String start_data,int days_to_add) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("yy-MM-dd");
         Calendar c = Calendar.getInstance();
