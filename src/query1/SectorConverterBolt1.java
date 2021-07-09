@@ -29,6 +29,7 @@ public class SectorConverterBolt1 extends BaseWindowedBolt {
                         OutputCollector collector) {
         this.collector = collector;
         this.dateformat = new SimpleDateFormat("yy-MM-dd");
+        // Inizializzo metrica latenza personalizzata
         latency = new AssignableMetric(new Long(0));
         start= 0;
         context.registerMetric("Latency-sector",latency,10);
