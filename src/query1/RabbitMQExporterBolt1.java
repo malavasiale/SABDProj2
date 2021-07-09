@@ -11,10 +11,7 @@ import utils.RabbitMQManager;
 import java.util.Map;
 
 /*
-   To better visualize the results,
-   we include an auxiliary operator
-   that exports results on a message queue,
-   implemented with rabbitMQ.
+   Esporta i dati in formato string su RabbitMQ
  */
 
 public class RabbitMQExporterBolt1 extends BaseRichBolt {
@@ -29,6 +26,9 @@ public class RabbitMQExporterBolt1 extends BaseRichBolt {
     private String defaultQueue;
     private transient CountMetric metric;
 
+   /*
+      Inizializzo RammbitMQManager
+   */
     public RabbitMQExporterBolt1(String rabbitMqHost, String rabbitMqUsername, String rabbitMqPassword,
                                  String defaultQueue) {
         super();
@@ -38,6 +38,9 @@ public class RabbitMQExporterBolt1 extends BaseRichBolt {
         this.defaultQueue = defaultQueue;
     }
 
+    /*
+      Inizializzo metrica CountMetric() personalizzata
+    */
     @Override
     public void prepare(@SuppressWarnings("rawtypes") Map map, TopologyContext topologyContext, OutputCollector outputCollector) {
 
@@ -50,8 +53,10 @@ public class RabbitMQExporterBolt1 extends BaseRichBolt {
 
     @Override
     public void execute(Tuple tuple) {
+        // Incremento di uno il contatore della metrica
         metric.incr();
         String output = tuple.getString(0);
+        // Mando la tupla alla coda RabbitMQ
         rabbitmq.send("query1",output);
 
     }
