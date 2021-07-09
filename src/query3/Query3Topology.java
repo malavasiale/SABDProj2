@@ -16,11 +16,17 @@ import java.text.ParseException;
 public class Query3Topology {
 
     public static void main(String[] args) throws ParseException {
+        
+        /*
+        * Costruisco la topologia per la query1
+        */
 
         TopologyBuilder builder = new TopologyBuilder();
 
         builder.setSpout("source",new ReaderCSVSpout3(),1);
-
+        /*
+        * Tramite TumblingWindow raggurppo i dati ogni 30 minuti
+        */
 
         builder.setBolt("distance",new DistanceBolt3(args[0]).withTimestampExtractor(new TimestampExtractor() {
             @Override
@@ -46,6 +52,9 @@ public class Query3Topology {
 
         Config conf = new Config();
         conf.put(Config.TOPOLOGY_ENABLE_MESSAGE_TIMEOUTS,false);
+        /*
+        * Configuro il bolt per consumare le metriche e ogni quanto tempo viene eseguito
+        */
         conf.put(Config.TOPOLOGY_DEBUG,false);
         conf.registerMetricsConsumer(MetricConsumer3.class,1);
         conf.put(Config.TOPOLOGY_BUILTIN_METRICS_BUCKET_SIZE_SECS,15);
