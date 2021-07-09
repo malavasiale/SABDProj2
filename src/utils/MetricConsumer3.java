@@ -9,6 +9,10 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
 
+/*
+    Classe che funziona da consumatore esterno delle metriche prodotte
+    dai vari bolt della topologia
+*/
 public class MetricConsumer3  implements IMetricsConsumer {
     FileWriter throughput;
     FileWriter distance ;
@@ -16,6 +20,7 @@ public class MetricConsumer3  implements IMetricsConsumer {
     FileWriter global ;
     @Override
     public void prepare(Map map, Object o, TopologyContext topologyContext, IErrorReporter iErrorReporter) {
+        // Preparo i file all' interno dei quali riversare le metriche
         try {
             throughput = new FileWriter("/data/test/query3_throughput.txt",true);
             distance = new FileWriter("/data/test/query3_distance.txt",true);
@@ -29,7 +34,8 @@ public class MetricConsumer3  implements IMetricsConsumer {
 
     @Override
     public void handleDataPoints(IMetricsConsumer.TaskInfo taskInfo, Collection<DataPoint> collection) {
-
+        
+        //Parsing delle tuple rappresentati le diverse metriche
         for(IMetricsConsumer.DataPoint p : collection){
             if(p.name.equals("Throughput")){
                 try {
