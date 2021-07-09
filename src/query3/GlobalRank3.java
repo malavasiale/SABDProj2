@@ -16,6 +16,9 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class GlobalRank3 extends BaseRichBolt {
+    /*
+    Bolt che permette di effettuare una classifica globale dete più classifiche parziali
+    */
     private SimpleDateFormat format = new SimpleDateFormat("yy-MM-dd HH:mm");
     private Integer num_of_partial = 3;
     long start;
@@ -29,6 +32,9 @@ public class GlobalRank3 extends BaseRichBolt {
     OutputCollector collector;
     @Override
     public void prepare(Map map, TopologyContext topologyContext, OutputCollector outputCollector) {
+        /*
+        Inizializzo metrica latenza personalizzata
+        */
         latency = new AssignableMetric(new Long(0));
         start= 0;
         topologyContext.registerMetric("Latency-global",latency,10);
@@ -40,15 +46,20 @@ public class GlobalRank3 extends BaseRichBolt {
         if(start == 0){
             start = System.nanoTime();
         }
+        /*
+        Inizializzazione variabili per lo svolgimento del lavoro del bolt
+        */
         ArrayList<Pair<String,Double>> array = (ArrayList<Pair<String,Double>>)tuple.getValue(0);
         Long timestamp = tuple.getLong(1);
         Date d = new Date(timestamp);
         String date_string = format.format(d);
-
+        
+        //Controllo se tupla giò presente nell'HashMap
         if(!sorted_lists.containsKey(timestamp)){
             Pair<ArrayList<Pair<String,Double>>,Integer> current_pair = new Pair<ArrayList<Pair<String,Double>>,Integer>(array,1);
             sorted_lists.put(timestamp,current_pair);
         }else{
+            //Inserimento nuovo elemento
             Pair<ArrayList<Pair<String,Double>>,Integer> current_pair = sorted_lists.get(timestamp);
             Pair<ArrayList<Pair<String,Double>>,Integer> current_pair_modified = current_pair.setAt1(current_pair.getValue1()+1);
             sorted_lists.put(timestamp,current_pair_modified);
@@ -72,6 +83,7 @@ public class GlobalRank3 extends BaseRichBolt {
                     }
                     row = row+","+new_list.get(i).getValue0()+","+new_list.get(i).getValue1().toString();
                 }
+                //ordinamento tramite la funzione personalizzata sort
                 long end = System.nanoTime();
                 latency.setValue(new Long(end-start));
                 start = 0;
