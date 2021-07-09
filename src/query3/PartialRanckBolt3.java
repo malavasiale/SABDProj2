@@ -17,6 +17,9 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class PartialRanckBolt3 extends BaseRichBolt {
+    /*
+    Bolt che permette di fare un classifica parziale
+    */
     long start;
     AssignableMetric latency;
     private SimpleDateFormat format = new SimpleDateFormat("yy-MM-dd HH:mm");
@@ -33,7 +36,9 @@ public class PartialRanckBolt3 extends BaseRichBolt {
     @Override
     public void prepare(Map map, TopologyContext topologyContext, OutputCollector outputCollector) {
         this.outputCollector = outputCollector;
-
+        /*
+        Inizializzazione variabili utili per effettuare la classifica
+        */
         array_window = new ArrayList<Pair<String,Double>>();
         try {
             Date date_start = format.parse("15-03-10 12:00");
@@ -51,6 +56,9 @@ public class PartialRanckBolt3 extends BaseRichBolt {
         if(start == 0){
             start = System.nanoTime();
         }
+        /*
+        Raccolta dati utili per lo svolgimento del ruolo del Bolt
+        */
         String trip_id = tuple.getString(1);
         Long windowStart = tuple.getLong(0);
         Double distance = tuple.getDouble(2);
