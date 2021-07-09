@@ -11,6 +11,10 @@ import utils.RabbitMQManager;
 import java.io.FileWriter;
 import java.util.Map;
 
+/*
+   Esporta i dati in formato string su RabbitMQ
+ */
+
 public class RabbitMQExporterBolt2 extends BaseRichBolt {
 
     private static final long serialVersionUID = 1L;
@@ -23,7 +27,9 @@ public class RabbitMQExporterBolt2 extends BaseRichBolt {
     private String defaultQueue;
     private CountMetric metric;
 
-
+   /*
+      Inizializzo RammbitMQManager
+   */
     public RabbitMQExporterBolt2(String rabbitMqHost, String rabbitMqUsername, String rabbitMqPassword,
                                  String defaultQueue) {
         super();
@@ -33,7 +39,10 @@ public class RabbitMQExporterBolt2 extends BaseRichBolt {
         this.rabbitMqPassword = rabbitMqPassword;
         this.defaultQueue = defaultQueue;
     }
-
+    
+    /*
+      Inizializzo metrica CountMetric() personalizzata
+    */
     @Override
     public void prepare(@SuppressWarnings("rawtypes") Map map, TopologyContext topologyContext, OutputCollector outputCollector) {
         this.metric = new CountMetric();
@@ -46,8 +55,10 @@ public class RabbitMQExporterBolt2 extends BaseRichBolt {
 
     @Override
     public void execute(Tuple tuple) {
+        // Incremento di uno il contatore della metrica
         metric.incr();
         String output = tuple.getString(0);
+        // Mando la tupla alla coda RabbitMQ
         rabbitmq.send("query2",output);
 
     }
