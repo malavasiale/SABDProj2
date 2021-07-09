@@ -44,6 +44,8 @@ public class ReaderCSVSpout1 extends BaseRichSpout {
             e.printStackTrace();
         }
         timestamp_start = date_start.getTime();
+        
+        // Inizializzo parametri di configurazione per lettura del file dall HDFS
         Configuration conf = new Configuration();
         conf.addResource(new Path("/data/Hadoop/core-site.xml"));
         conf.addResource(new Path("/data/Hadoop/hdfs-site.xml"));
@@ -66,7 +68,7 @@ public class ReaderCSVSpout1 extends BaseRichSpout {
     public void nextTuple() {
         String line;
 
-
+        // Separo le righe lette dall HDFS e le emetto come tupla
         try {
             if ((line = inputStream.readLine())!=null){
                 String[] splitted_line = line.split(",");
