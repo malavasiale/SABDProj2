@@ -12,10 +12,17 @@ import utils.MetricConsumer2;
 
 public class Query2Topology {
     public static void main(String[] args){
+        
+        /*
+        * Costruisco la topologia per la query1
+        */
         TopologyBuilder builder = new TopologyBuilder();
 
         builder.setSpout("source",new ReaderCSVSpout2(),1);
-
+        
+        /*
+        * Tramite TumblingWindow raggurppo i dati ogni 30 minuti
+        */
         builder.setBolt("sector",new SectorConverterBolt2().withTimestampExtractor(new TimestampExtractor() {
             @Override
             public long extractTimestamp(Tuple tuple) {
@@ -43,6 +50,10 @@ public class Query2Topology {
         Config conf = new Config();
         conf.put(Config.TOPOLOGY_ENABLE_MESSAGE_TIMEOUTS,false);
         conf.put(Config.TOPOLOGY_DEBUG,false);
+        
+        /*
+        * Configuro il bolt per consumare le metriche e ogni quanto tempo viene eseguito
+        */
         conf.registerMetricsConsumer(MetricConsumer2.class,1);
         conf.put(Config.TOPOLOGY_BUILTIN_METRICS_BUCKET_SIZE_SECS,30);
         conf.setMaxTaskParallelism(3);
